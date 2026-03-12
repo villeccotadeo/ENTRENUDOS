@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Entre Nudos"/>
+  <title>Entre Nudos — Gestión</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    :root{
+      --black:#0D0D0D;--dark:#1A1A1A;--dark2:#222222;--dark3:#2C2C2C;
+      --gold:#C9A84C;--gold-light:#E8C97A;--gold-dim:#8A6E2F;
+      --gold-faint:rgba(201,168,76,0.12);--gold-faint2:rgba(201,168,76,0.22);
+      --text:#F0EAD6;--text-muted:#9A8F72;--text-dim:#6B6050;
+      --border:rgba(201,168,76,0.18);--border2:rgba(201,168,76,0.35);
+      --nav-h:64px;--header-h:70px;
+    }
+    html,body{height:100%;overflow:hidden}
+    body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--text);font-size:15px;display:flex;flex-direction:column}
+
+    .header{background:var(--dark);border-bottom:1px solid var(--border2);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;height:var(--header-h)}
+    .logo-wrap{width:44px;height:44px;border-radius:50%;background:var(--black);border:1.5px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .logo-wrap svg{width:26px;height:26px}
+    .header-text h1{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold-light);letter-spacing:.8px}
+    .header-text p{font-size:11px;color:var(--text-muted);letter-spacing:.6px;text-transform:uppercase}
+    .header-stats{margin-left:auto;display:flex;gap:16px}
+    .hstat{text-align:center}
+    .hstat-num{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);display:block;line-height:1}
+    .hstat-lbl{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px}
+
+    .content-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(var(--nav-h) + 24px)}
+    .content{padding:14px 14px 0}
+
+    .nav{background:var(--dark);border-top:1px solid var(--border2);display:flex;height:var(--nav-h);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);position:fixed;bottom:0;left:0;right:0;z-index:100}
+    .nav-btn{flex:1;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;color:var(--text-dim);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:color .2s;padding:8px 4px;touch-action:manipulation}
+    .nav-btn.active{color:var(--gold)}
+    .nav-btn:active{opacity:.7}
+    .nav-icon{font-size:22px;line-height:1}
+
+    .card{background:var(--dark);border-radius:16px;border:1px solid var(--border);padding:16px;margin-bottom:12px}
+    .card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--gold-light);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:1/-1}
+    label{font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.6px}
+    input,select,textarea{border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text);background:var(--dark2);outline:none;transition:border-color .2s;width:100%;-webkit-appearance:none;appearance:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+    textarea{resize:none;min-height:72px}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A84C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+    select option{background:var(--dark2);color:var(--text)}
+
+    .btn-primary{background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:var(--black);border:none;padding:15px 20px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;width:100%;margin-top:12px;touch-action:manipulation;letter-spacing:.3px}
+    .btn-primary:active{opacity:.85;transform:scale(.98)}
+
+    .btn-sm{background:var(--gold-faint);color:var(--gold);border:1px solid var(--border2);padding:8px 14px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;touch-action:manipulation;white-space:nowrap}
+    .btn-sm:active{opacity:.7}
+    .btn-sm.danger{background:rgba(180,50,50,0.12);color:#E07070;border-color:rgba(180,50,50,0.3)}
+    .btn-sm.ghost{background:none;border-color:var(--border);color:var(--text-muted)}
+
+    .client-item{background:var(--dark);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:13px;cursor:pointer;touch-action:manipulation}
+    .client-item:active{background:var(--dark2);border-color:var(--gold-dim)}
+    .client-avatar{width:46px;height:46px;border-radius:50%;background:var(--dark3);border:1.5px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--gold);flex-shrink:0}
+    .client-info{flex:1;min-width:0}
+    .client-name{font-size:15px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .client-meta{font-size:12px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .client-badge{background:var(--gold-faint);color:var(--gold);border-radius:20px;padding:4px 11px;font-size:12px;font-weight:500;flex-shrink:0;border:1px solid var(--border2)}
+    .client-badge.zero{background:rgba(100,90,70,.15);color:var(--text-dim);border-color:rgba(100,90,70,.25)}
+
+    .sale-item{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+    .sale-price{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--gold);white-space:nowrap}
+    .sale-date{font-size:12px;color:var(--text-dim)}
+    .prod-tag{display:inline-block;background:var(--dark3);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:12px;color:var(--text-muted);margin:2px 3px 0 0}
+
+    .product-row{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+    .product-row-top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:10px}
+    .product-row-bottom{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .remove-btn{background:rgba(180,50,50,.15);color:#E07070;border:1px solid rgba(180,50,50,.3);border-radius:9px;cursor:pointer;font-size:20px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation}
+    .remove-btn:active{opacity:.7}
+    .add-product-btn{background:var(--gold-faint);color:var(--gold);border:1px dashed var(--gold-dim);border-radius:11px;padding:12px;width:100%;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:12px;touch-action:manipulation}
+    .add-product-btn:active{background:var(--gold-faint2)}
+
+    .detail-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .detail-avatar{width:56px;height:56px;border-radius:50%;background:var(--dark3);border:2px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);flex-shrink:0}
+    .detail-info h2{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--gold-light)}
+    .detail-meta{font-size:12px;color:var(--text-muted);margin-top:3px}
+    .info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px}
+    .info-row:last-child{border-bottom:none}
+    .info-label{color:var(--text-muted);flex-shrink:0}
+    .info-val{color:var(--text);font-weight:500;text-align:right;word-break:break-word}
+
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .stat-card{background:var(--dark);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+    .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);display:block;line-height:1}
+    .stat-label{font-size:11px;color:var(--text-muted);margin-top:5px;text-transform:uppercase;letter-spacing:.6px}
+
+    .search-wrap{position:relative;margin-bottom:12px}
+    .search-wrap input{padding-left:42px;font-size:16px}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px}
+    .back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--gold);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:14px;font-family:'DM Sans',sans-serif;padding:8px 0;touch-action:manipulation}
+    .divider{height:1px;background:var(--border);margin:14px 0}
+    .flex-row{display:flex;gap:8px;flex-wrap:wrap}
+    .flex-row .btn-sm{flex:1;text-align:center}
+    .total-row{display:flex;justify-content:space-between;align-items:center;background:var(--gold-faint);border:1px solid var(--border2);border-radius:12px;padding:12px 16px;margin-top:12px}
+    .total-row span:first-child{font-size:14px;color:var(--text-muted)}
+    .total-row span:last-child{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--gold);font-weight:600}
+    .section-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);margin-bottom:10px;font-weight:500}
+    .empty-state{text-align:center;padding:44px 20px;color:var(--text-muted)}
+    .empty-icon{font-size:44px;margin-bottom:12px}
+    .empty-state p{font-size:14px;line-height:1.6}
+    .legend-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px}
+    .legend-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+    .success-toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%);background:var(--dark3);color:var(--gold);padding:11px 22px;border-radius:30px;border:1px solid var(--gold-dim);font-size:14px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+    .success-toast.show{opacity:1}
+  </style>
+</head>
+<body>
+
+<div id="app" style="display:flex;flex-direction:column;height:100vh">
+  <div class="header">
+    <div class="logo-wrap">
+      <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="50" cy="18" rx="12" ry="12" fill="#C9A84C"/>
+        <path d="M50 28 C30 28 14 42 14 58 C14 72 24 82 38 86 C44 88 50 88 50 88 C50 88 56 88 62 86 C76 82 86 72 86 58 C86 42 70 28 50 28Z" fill="none" stroke="#C9A84C" stroke-width="7"/>
+        <path d="M50 88 C40 88 30 80 30 68 C30 56 40 50 50 50 C60 50 70 56 70 68 C70 80 60 88 50 88Z" fill="none" stroke="#C9A84C" stroke-width="6"/>
+        <path d="M38 54 C38 54 50 42 62 54 C70 62 68 74 60 80 L50 88 L40 80 C32 74 30 62 38 54Z" fill="#C9A84C" opacity="0.35"/>
+        <path d="M50 88 L50 110" stroke="#C9A84C" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="50" cy="115" rx="5" ry="6" fill="#C9A84C"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>Entre Nudos</h1>
+      <p>Accesorios · Gestión</p>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><span class="hstat-num" id="hstat-clients">0</span><span class="hstat-lbl">Clientes</span></div>
+      <div class="hstat"><span class="hstat-num" id="hstat-sales">0</span><span class="hstat-lbl">Ventas</span></div>
+    </div>
+  </div>
+
+  <div class="content-wrap" id="scroller">
+    <div class="content" id="content"></div>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="setTab('clients')" id="tab-clients"><span class="nav-icon">👥</span>Clientes</button>
+    <button class="nav-btn" onclick="setTab('new-sale')" id="tab-new-sale"><span class="nav-icon">✨</span>Venta</button>
+    <button class="nav-btn" onclick="setTab('sales')" id="tab-sales"><span class="nav-icon">🧾</span>Historial</button>
+    <button class="nav-btn" onclick="setTab('stats')" id="tab-stats"><span class="nav-icon">📊</span>Resumen</button>
+  </nav>
+</div>
+
+<div class="success-toast" id="toast"></div>
+
+<script>
+let db=JSON.parse(localStorage.getItem('entrenudos_v3')||'{"clients":[],"sales":[]}');
+let currentTab='clients',selectedClient=null,saleProducts=[{name:'',qty:1,price:''}];
+
+function save(){localStorage.setItem('entrenudos_v3',JSON.stringify(db));updateHeader()}
+function updateHeader(){
+  document.getElementById('hstat-clients').textContent=db.clients.length;
+  document.getElementById('hstat-sales').textContent=db.sales.length;
+}
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+function scrollTop(){const s=document.getElementById('scroller');if(s)s.scrollTop=0}
+function initials(n,l){return((n||'?')[0]+(l||'?')[0]).toUpperCase()}
+function formatDate(d){return new Date(d+'T12:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'})}
+function fmoney(n){return '$'+Number(n).toLocaleString('es-AR')}
+function csales(cid){return db.sales.filter(s=>s.clientId===cid)}
+function ctotal(cid){return csales(cid).reduce((a,s)=>a+stotal(s),0)}
+function stotal(s){return s.items.reduce((a,i)=>a+i.price*i.qty,0)}
+
+function setTab(t){
+  currentTab=t;selectedClient=null;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('tab-'+t);if(el)el.classList.add('active');
+  render();scrollTop();
+}
+
+function render(){
+  const c=document.getElementById('content');
+  if(currentTab==='clients') c.innerHTML=renderClients();
+  else if(currentTab==='new-client') c.innerHTML=renderNewClientForm();
+  else if(currentTab==='client-detail') c.innerHTML=renderClientDetail();
+  else if(currentTab==='edit-client') c.innerHTML=renderEditClientForm();
+  else if(currentTab==='new-sale') c.innerHTML=renderNewSaleForm();
+  else if(currentTab==='sales') c.innerHTML=renderSales();
+  else if(currentTab==='stats'){c.innerHTML=renderStats();setTimeout(drawCharts,100);}
+  updateHeader();
+}
+
+function renderClients(){
+  const sv=document.getElementById('csearch')?document.getElementById('csearch').value.toLowerCase():'';
+  let f=db.clients.filter(c=>(c.name+' '+c.last).toLowerCase().includes(sv)||(c.phone||'').includes(sv));
+  let h=`<div class="search-wrap"><span class="search-icon">🔍</span><input id="csearch" placeholder="Buscar cliente..." value="${sv}" oninput="renderCS()" autocomplete="off"/></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span class="section-label">${f.length} cliente${f.length!==1?'s':''}</span>
+    <button class="btn-sm" onclick="goNC()">+ Nuevo</button>
+  </div>`;
+  if(!f.length) return h+`<div class="empty-state"><div class="empty-icon">🌿</div><p>No hay clientes.<br>¡Agregá el primero!</p></div>`;
+  f.sort((a,b)=>(a.name+a.last).localeCompare(b.name+b.last));
+  f.forEach(c=>{
+    const sc=csales(c.id);
+    h+=`<div class="client-item" onclick="openClient('${c.id}')">
+      <div class="client-avatar">${initials(c.name,c.last)}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name} ${c.last}</div>
+        <div class="client-meta">${c.phone||'Sin teléfono'}${c.city?' · '+c.city:''}</div>
+      </div>
+      <div class="client-badge ${!sc.length?'zero':''}">${sc.length} ${sc.length===1?'venta':'ventas'}</div>
+    </div>`;
+  });
+  return h;
+}
+function renderCS(){document.getElementById('content').innerHTML=renderClients()}
+
+function renderNewClientForm(){
+  return `<button class="back-btn" onclick="setTab('clients')">← Volver</button>
+  <div class="card">
+    <div class="card-title">👤 Nuevo cliente</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Nombre *</label><input id="f-name" placeholder="María" autocomplete="given-name"/></div>
+      <div class="form-group"><label>Apellido *</label><input id="f-last" placeholder="García" autocomplete="family-name"/></div>
+      <div class="form-group"><label>Teléfono</label><input id="f-phone" placeholder="11 2345-6789" type="tel" autocomplete="tel"/></div>
+      <div class="form-group"><label>Mail</label><input id="f-email" placeholder="hola@mail.com" type="email" autocomplete="email"/></div>
+      <div class="form-group"><label>Ciudad</label><input id="f-city" placeholder="Buenos Aires"/></div>
+      <div class="form-group"><label>Provincia</label><input id="f-province" placeholder="CABA"/></div>
+      <div class="form-group"><label>Cód. Postal</label><input id="f-cp" placeholder="1425" type="tel"/></div>
+      <div class="form-group"><label>Notas</label><input id="f-notes" placeholder="Preferencias, cómo llegó..."/></div>
+    </div>
+    <button class="btn-primary" onclick="saveNC()">Guardar cliente</button>
+  </div>`;
+}
+
+function renderEditClientForm(){
+  const c=db.clients.find(x=>x.id===selectedClient);if(!c)return'';
+  return `<button class="back-btn" onclick="openClient('${c.id}')">← Volver al cliente</button>
+  <div class="card">
+    <div class="card-title">✏️ Editar cliente</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Nombre *</label><input id="f-name" value="${c.name}"/></div>
+      <div class="form-group"><label>Apellido *</label><input id="f-last" value="${c.last}"/></div>
+      <div class="form-group"><label>Teléfono</label><input id="f-phone" value="${c.phone||''}" type="tel"/></div>
+      <div class="form-group"><label>Mail</label><input id="f-email" value="${c.email||''}" type="email"/></div>
+      <div class="form-group"><label>Ciudad</label><input id="f-city" value="${c.city||''}"/></div>
+      <div class="form-group"><label>Provincia</label><input id="f-province" value="${c.province||''}"/></div>
+      <div class="form-group"><label>Cód. Postal</label><input id="f-cp" value="${c.cp||''}" type="tel"/></div>
+      <div class="form-group"><label>Notas</label><input id="f-notes" value="${c.notes||''}"/></div>
+    </div>
+    <button class="btn-primary" onclick="saveEC('${c.id}')">Guardar cambios</button>
+  </div>`;
+}
+
+function renderClientDetail(){
+  const c=db.clients.find(x=>x.id===selectedClient);
+  if(!c){setTab('clients');return''}
+  const sales=csales(c.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const total=ctotal(c.id);
+  let h=`<button class="back-btn" onclick="setTab('clients')">← Todos los clientes</button>
+  <div class="card">
+    <div class="detail-header">
+      <div class="detail-avatar">${initials(c.name,c.last)}</div>
+      <div class="detail-info"><h2>${c.name} ${c.last}</h2><div class="detail-meta">Cliente desde ${formatDate(c.createdAt)}</div></div>
+    </div>
+    ${c.phone?`<div class="info-row"><span class="info-label">📱 Teléfono</span><span class="info-val"><a href="tel:${c.phone}" style="color:var(--gold);text-decoration:none">${c.phone}</a></span></div>`:''}
+    ${c.email?`<div class="info-row"><span class="info-label">✉️ Mail</span><span class="info-val" style="font-size:13px">${c.email}</span></div>`:''}
+    ${c.city||c.province?`<div class="info-row"><span class="info-label">📍 Ubicación</span><span class="info-val">${[c.city,c.province,c.cp].filter(Boolean).join(', ')}</span></div>`:''}
+    ${c.notes?`<div class="info-row"><span class="info-label">📝 Nota</span><span class="info-val">${c.notes}</span></div>`:''}
+    <div class="divider"></div>
+    <div class="flex-row">
+      <button class="btn-sm" onclick="goEC('${c.id}')">✏️ Editar</button>
+      <button class="btn-sm" onclick="goNSC('${c.id}')">✨ Nueva venta</button>
+      <button class="btn-sm danger" onclick="delClient('${c.id}')">🗑️</button>
+    </div>
+  </div>
+  <div class="section-label">${sales.length} venta${sales.length!==1?'s':''}</div>`;
+  if(!sales.length){
+    h+=`<div class="empty-state" style="padding:28px"><div class="empty-icon">🛍️</div><p>Sin ventas todavía</p></div>`;
+  } else {
+    sales.forEach(s=>{
+      const st=stotal(s);
+      h+=`<div class="sale-item">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div style="flex:1">
+            <div>${s.items.map(i=>`<span class="prod-tag">${i.qty>1?i.qty+'× ':''}${i.name} — ${fmoney(i.price)}</span>`).join('')}</div>
+            ${s.note?`<div style="font-size:12px;color:var(--text-dim);margin-top:5px">${s.note}</div>`:''}
+          </div>
+          <div class="sale-price">${fmoney(st)}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <span class="sale-date">📅 ${formatDate(s.date)}</span>
+          <button class="btn-sm danger" style="padding:6px 12px;font-size:12px" onclick="delSale('${s.id}')">Eliminar</button>
+        </div>
+      </div>`;
+    });
+    h+=`<div class="total-row"><span>Total gastado</span><span>${fmoney(total)}</span></div>`;
+  }
+  return h;
+}
+
+function renderNewSaleForm(){
+  const opts=db.clients.map(c=>`<option value="${c.id}" ${selectedClient===c.id?'selected':''}>${c.name} ${c.last}</option>`).join('');
+  let h=`${selectedClient?`<button class="back-btn" onclick="openClient('${selectedClient}')">← Volver al cliente</button>`:''}
+  <div class="card">
+    <div class="card-title">✨ Registrar venta</div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Cliente *</label>
+        <select id="s-client">${db.clients.length?'<option value="">Seleccioná un cliente...</option>'+opts:'<option value="">Primero creá un cliente</option>'}</select>
+      </div>
+      <div class="form-group"><label>Fecha *</label><input id="s-date" type="date" value="${new Date().toISOString().split('T')[0]}"/></div>
+      <div class="form-group"><label>Nota</label><input id="s-note" placeholder="Envío, devolución..."/></div>
+    </div>
+    <div style="margin:14px 0 8px"><label>Productos *</label></div>
+    <div id="prods-list">`;
+  saleProducts.forEach((p,i)=>{
+    h+=`<div class="product-row">
+      <div class="product-row-top">
+        <div class="form-group" style="margin:0"><label style="font-size:10px">Producto</label>
+          <input placeholder="Pulsera con dijes..." value="${p.name}" oninput="saleProducts[${i}].name=this.value"/>
+        </div>
+        <button class="remove-btn" onclick="removeP(${i})" ${saleProducts.length===1?'style="opacity:.3;pointer-events:none"':''}>×</button>
+      </div>
+      <div class="product-row-bottom">
+        <div class="form-group" style="margin:0"><label style="font-size:10px">Cantidad</label>
+          <input type="number" min="1" value="${p.qty}" oninput="saleProducts[${i}].qty=parseInt(this.value)||1;updTotal()"/>
+        </div>
+        <div class="form-group" style="margin:0"><label style="font-size:10px">Precio unitario</label>
+          <input type="number" min="0" placeholder="0" value="${p.price}" oninput="saleProducts[${i}].price=parseFloat(this.value)||0;updTotal()"/>
+        </div>
+      </div>
+    </div>`;
+  });
+  h+=`</div>
+    <button class="add-product-btn" onclick="addP()">+ Agregar otro producto</button>
+    <div class="total-row"><span>Total de la venta</span><span id="stotal-disp">${fmoney(saleProducts.reduce((a,p)=>a+(p.price||0)*(p.qty||1),0))}</span></div>
+    <button class="btn-primary" onclick="saveS()">Guardar venta</button>
+  </div>`;
+  return h;
+}
+
+function updTotal(){
+  const t=saleProducts.reduce((a,p)=>a+(parseFloat(p.price)||0)*(parseInt(p.qty)||1),0);
+  const el=document.getElementById('stotal-disp');if(el)el.textContent=fmoney(t);
+}
+
+function addP(){
+  const cid=document.getElementById('s-client')?.value;
+  const date=document.getElementById('s-date')?.value;
+  const note=document.getElementById('s-note')?.value;
+  saleProducts.push({name:'',qty:1,price:''});
+  render();scrollTop();
+  if(cid){const el=document.getElementById('s-client');if(el)el.value=cid}
+  if(date){const el=document.getElementById('s-date');if(el)el.value=date}
+  if(note){const el=document.getElementById('s-note');if(el)el.value=note}
+}
+
+function removeP(i){
+  if(saleProducts.length===1)return;
+  const cid=document.getElementById('s-client')?.value;
+  const date=document.getElementById('s-date')?.value;
+  const note=document.getElementById('s-note')?.value;
+  saleProducts.splice(i,1);render();
+  if(cid){const el=document.getElementById('s-client');if(el)el.value=cid}
+  if(date){const el=document.getElementById('s-date');if(el)el.value=date}
+  if(note){const el=document.getElementById('s-note');if(el)el.value=note}
+}
+
+function renderSales(){
+  const sales=[...db.sales].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  let h=`<div class="section-label">${sales.length} venta${sales.length!==1?'s':''} en total</div>`;
+  if(!sales.length) return h+`<div class="empty-state"><div class="empty-icon">🧾</div><p>No hay ventas registradas.</p></div>`;
+  sales.forEach(s=>{
+    const c=db.clients.find(x=>x.id===s.clientId);
+    const st=stotal(s);
+    h+=`<div class="sale-item">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:5px">${c?c.name+' '+c.last:'(cliente eliminado)'}</div>
+          <div>${s.items.map(i=>`<span class="prod-tag">${i.qty>1?i.qty+'× ':''}${i.name} — ${fmoney(i.price)}</span>`).join('')}</div>
+          ${s.note?`<div style="font-size:12px;color:var(--text-dim);margin-top:5px">${s.note}</div>`:''}
+        </div>
+        <div class="sale-price">${fmoney(st)}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <span class="sale-date">📅 ${formatDate(s.date)}</span>
+        <div style="display:flex;gap:6px">
+          ${c?`<button class="btn-sm ghost" style="padding:6px 12px;font-size:12px" onclick="openClient('${c.id}')">Ver cliente</button>`:''}
+          <button class="btn-sm danger" style="padding:6px 12px;font-size:12px" onclick="delSale('${s.id}');render()">Eliminar</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  const gt=db.sales.reduce((a,s)=>a+stotal(s),0);
+  h+=`<div class="total-row" style="margin-top:14px"><span>Total general</span><span>${fmoney(gt)}</span></div>`;
+  return h;
+}
+
+function renderStats(){
+  const total=db.sales.reduce((a,s)=>a+stotal(s),0);
+  const avg=db.sales.length?total/db.sales.length:0;
+  const topC=db.clients.map(c=>({c,total:ctotal(c.id),count:csales(c.id).length})).filter(x=>x.count>0).sort((a,b)=>b.total-a.total).slice(0,5);
+  let h=`<div class="stats-grid">
+    <div class="stat-card"><span class="stat-num">${db.clients.length}</span><div class="stat-label">Clientes</div></div>
+    <div class="stat-card"><span class="stat-num">${db.sales.length}</span><div class="stat-label">Ventas</div></div>
+    <div class="stat-card"><span class="stat-num">${fmoney(total)}</span><div class="stat-label">Total</div></div>
+    <div class="stat-card"><span class="stat-num">${fmoney(Math.round(avg))}</span><div class="stat-label">Promedio</div></div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title">📅 Ventas por mes</div>
+    ${db.sales.length?'<canvas id="barChart"></canvas>':'<div style="color:var(--text-dim);font-size:13px;text-align:center;padding:24px 0">Sin datos todavía</div>'}
+  </div>`;
+  if(topC.length>=2){
+    h+=`<div class="card" style="margin-bottom:12px">
+      <div class="card-title">🥇 Mejores clientes</div>
+      <canvas id="pieChart"></canvas>
+      <div id="pie-legend" style="margin-top:14px"></div>
+    </div>`;
+  }
+  if(topC.length){
+    h+=`<div class="card"><div class="card-title">🌟 Ranking</div>`;
+    topC.forEach((item,i)=>{
+      h+=`<div class="info-row" onclick="openClient('${item.c.id}')" style="cursor:pointer">
+        <span class="info-label">${['🥇','🥈','🥉','4.','5.'][i]} ${item.c.name} ${item.c.last}</span>
+        <span class="info-val">${fmoney(item.total)} <span style="font-size:12px;color:var(--text-dim)">(${item.count})</span></span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  return h;
+}
+
+function drawCharts(){
+  const W=document.getElementById('content')?.offsetWidth-28||320;
+  drawBar(W);drawPie(W);
+}
+
+function drawBar(W){
+  const canvas=document.getElementById('barChart');if(!canvas)return;
+  const byM={};
+  db.sales.forEach(s=>{const m=s.date.slice(0,7);byM[m]=(byM[m]||0)+stotal(s)});
+  const months=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0])).slice(-7);
+  if(!months.length)return;
+  const H=200;canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  const maxV=Math.max(...months.map(m=>m[1]));
+  const pad={top:28,bottom:44,left:6,right:6};
+  const cH=H-pad.top-pad.bottom;
+  const bW=(W-pad.left-pad.right)/months.length;
+  months.forEach(([m,v],i)=>{
+    const x=pad.left+i*bW;
+    const bH=Math.max((v/maxV)*cH,2);
+    const y=pad.top+cH-bH;
+    const g=ctx.createLinearGradient(0,y,0,y+bH);
+    g.addColorStop(0,'#E8C97A');g.addColorStop(1,'#6B5020');
+    ctx.fillStyle=g;ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(x+6,y,bW-12,bH,4);
+    else{ctx.moveTo(x+10,y);ctx.lineTo(x+bW-6,y);ctx.lineTo(x+bW-6,y+bH);ctx.lineTo(x+6,y+bH);ctx.closePath();}
+    ctx.fill();
+    const label=v>=1000?'$'+Math.round(v/1000)+'k':fmoney(v);
+    ctx.fillStyle='#C9A84C';ctx.font='500 10px DM Sans';ctx.textAlign='center';
+    ctx.fillText(label,x+bW/2,y-6);
+    const[yr,mo]=m.split('-');
+    const mN=new Date(yr,mo-1).toLocaleString('es-AR',{month:'short'});
+    ctx.fillStyle='#6B6050';ctx.font='10px DM Sans';ctx.textAlign='center';
+    ctx.fillText(mN+" '"+yr.slice(2),x+bW/2,H-10);
+  });
+  ctx.strokeStyle='rgba(201,168,76,0.15)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad.left,pad.top+cH);ctx.lineTo(W-pad.right,pad.top+cH);ctx.stroke();
+}
+
+function drawPie(W){
+  const canvas=document.getElementById('pieChart');if(!canvas)return;
+  const topC=db.clients.map(c=>({c,total:ctotal(c.id)})).filter(x=>x.total>0).sort((a,b)=>b.total-a.total).slice(0,5);
+  if(topC.length<2)return;
+  const H=200;canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  const colors=['#C9A84C','#E8C97A','#8A6E2F','#6B5A35','#4A3E25'];
+  const total=topC.reduce((a,x)=>a+x.total,0);
+  const cx=W/2,cy=H/2,r=Math.min(W,H)/2-16;
+  let angle=-Math.PI/2;
+  topC.forEach((item,i)=>{
+    const slice=(item.total/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,angle,angle+slice);ctx.closePath();
+    ctx.fillStyle=colors[i];ctx.fill();
+    ctx.strokeStyle='#0D0D0D';ctx.lineWidth=2.5;ctx.stroke();
+    const midA=angle+slice/2;
+    const px=cx+Math.cos(midA)*r*0.65,py=cy+Math.sin(midA)*r*0.65;
+    const pct=Math.round(item.total/total*100);
+    ctx.fillStyle=i<2?'#0D0D0D':'#F0EAD6';
+    ctx.font='500 11px DM Sans';ctx.textAlign='center';ctx.textBaseline='middle';
+    if(pct>=8)ctx.fillText(pct+'%',px,py);
+    angle+=slice;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,r*0.4,0,Math.PI*2);ctx.fillStyle='#0D0D0D';ctx.fill();
+  const lg=document.getElementById('pie-legend');
+  if(lg) lg.innerHTML=topC.map((item,i)=>`<div class="legend-item">
+    <div class="legend-dot" style="background:${colors[i]}"></div>
+    <span style="color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.c.name} ${item.c.last}</span>
+    <span style="color:var(--gold);font-weight:500;margin-left:8px">${fmoney(item.total)}</span>
+  </div>`).join('');
+}
+
+function goNC(){currentTab='new-client';render();scrollTop()}
+function goEC(id){selectedClient=id;currentTab='edit-client';render();scrollTop()}
+function openClient(id){selectedClient=id;currentTab='client-detail';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));render();scrollTop()}
+function goNSC(cid){selectedClient=cid;saleProducts=[{name:'',qty:1,price:''}];currentTab='new-sale';document.getElementById('tab-new-sale').classList.add('active');render();scrollTop()}
+
+function saveNC(){
+  const name=document.getElementById('f-name').value.trim();
+  const last=document.getElementById('f-last').value.trim();
+  if(!name||!last){toast('⚠️ Completá nombre y apellido');return}
+  db.clients.push({id:'c_'+Date.now(),name,last,
+    phone:document.getElementById('f-phone').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    city:document.getElementById('f-city').value.trim(),
+    province:document.getElementById('f-province').value.trim(),
+    cp:document.getElementById('f-cp').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    createdAt:new Date().toISOString()
+  });
+  save();toast('✅ Cliente guardado');setTab('clients');
+}
+
+function saveEC(id){
+  const name=document.getElementById('f-name').value.trim();
+  const last=document.getElementById('f-last').value.trim();
+  if(!name||!last){toast('⚠️ Completá nombre y apellido');return}
+  const c=db.clients.find(x=>x.id===id);
+  Object.assign(c,{name,last,
+    phone:document.getElementById('f-phone').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    city:document.getElementById('f-city').value.trim(),
+    province:document.getElementById('f-province').value.trim(),
+    cp:document.getElementById('f-cp').value.trim(),
+    notes:document.getElementById('f-notes').value.trim()
+  });
+  save();toast('✅ Cliente actualizado');openClient(id);
+}
+
+function saveS(){
+  const cid=document.getElementById('s-client').value;
+  const date=document.getElementById('s-date').value;
+  if(!cid){toast('⚠️ Seleccioná un cliente');return}
+  if(!date){toast('⚠️ Ingresá la fecha');return}
+  const rows=document.querySelectorAll('.product-row');
+  const items=[];
+  rows.forEach(row=>{
+    const inputs=row.querySelectorAll('input');
+    const name=(inputs[0]?.value||'').trim();
+    const qty=parseInt(inputs[1]?.value)||1;
+    const price=parseFloat(inputs[2]?.value)||0;
+    if(name) items.push({name,qty,price});
+  });
+  if(!items.length){toast('⚠️ Agregá al menos un producto');return}
+  const note=document.getElementById('s-note').value.trim();
+  db.sales.push({id:'s_'+Date.now(),clientId:cid,items,date,note,createdAt:new Date().toISOString()});
+  saleProducts=[{name:'',qty:1,price:''}];
+  save();toast('✅ Venta guardada');
+  const prev=selectedClient;selectedClient=null;
+  if(prev) openClient(cid); else setTab('sales');
+}
+
+function delClient(id){
+  if(!confirm('¿Eliminar este cliente y todas sus ventas?'))return;
+  db.clients=db.clients.filter(c=>c.id!==id);
+  db.sales=db.sales.filter(s=>s.clientId!==id);
+  save();toast('🗑️ Cliente eliminado');setTab('clients');
+}
+
+function delSale(id){
+  if(!confirm('¿Eliminar esta venta?'))return;
+  db.sales=db.sales.filter(s=>s.id!==id);
+  save();render();toast('🗑️ Venta eliminada');
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Entre Nudos"/>
+  <title>Entre Nudos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    :root{
+      --black:#0D0D0D;--dark:#1A1A1A;--dark2:#222222;--dark3:#2C2C2C;
+      --gold:#C9A84C;--gold-light:#E8C97A;--gold-dim:#8A6E2F;
+      --gold-faint:rgba(201,168,76,0.12);--gold-faint2:rgba(201,168,76,0.22);
+      --text:#F0EAD6;--text-muted:#9A8F72;--text-dim:#6B6050;
+      --border:rgba(201,168,76,0.18);--border2:rgba(201,168,76,0.35);
+      --nav-h:64px;
+    }
+    html,body{height:100%;overflow:hidden}
+    body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--text);font-size:15px;display:flex;flex-direction:column}
+
+    .header{background:var(--dark);border-bottom:1px solid var(--border2);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+    .logo-wrap{width:42px;height:42px;border-radius:50%;background:var(--black);border:1.5px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .logo-wrap svg{width:24px;height:24px}
+    .header-text h1{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--gold-light);letter-spacing:.8px;line-height:1.1}
+    .header-text p{font-size:10px;color:var(--text-muted);letter-spacing:.8px;margin-top:2px;font-style:italic}
+    .header-stats{margin-left:auto;display:flex;gap:16px}
+    .hstat{text-align:center}
+    .hstat-num{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);display:block;line-height:1}
+    .hstat-lbl{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px}
+
+    .content-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(var(--nav-h) + 24px)}
+    .content{padding:14px 14px 0}
+
+    .nav{background:var(--dark);border-top:1px solid var(--border2);display:flex;height:var(--nav-h);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);position:fixed;bottom:0;left:0;right:0;z-index:100}
+    .nav-btn{flex:1;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;color:var(--text-dim);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:color .2s;padding:8px 4px;touch-action:manipulation}
+    .nav-btn.active{color:var(--gold)}
+    .nav-btn:active{opacity:.7}
+    .nav-icon{font-size:22px;line-height:1}
+
+    .card{background:var(--dark);border-radius:16px;border:1px solid var(--border);padding:16px;margin-bottom:12px}
+    .card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--gold-light);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:1/-1}
+    label{font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.6px}
+    input,select,textarea{border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text);background:var(--dark2);outline:none;transition:border-color .2s;width:100%;-webkit-appearance:none;appearance:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+    textarea{resize:none;min-height:66px}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A84C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+    select option{background:var(--dark2);color:var(--text)}
+
+    .btn-primary{background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:var(--black);border:none;padding:15px 20px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;width:100%;margin-top:12px;touch-action:manipulation;letter-spacing:.3px}
+    .btn-primary:active{opacity:.85;transform:scale(.98)}
+
+    .btn-sm{background:var(--gold-faint);color:var(--gold);border:1px solid var(--border2);padding:8px 14px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;touch-action:manipulation;white-space:nowrap}
+    .btn-sm:active{opacity:.7}
+    .btn-sm.danger{background:rgba(180,50,50,0.12);color:#E07070;border-color:rgba(180,50,50,0.3)}
+    .btn-sm.ghost{background:none;border-color:var(--border);color:var(--text-muted)}
+
+    .client-item{background:var(--dark);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:13px;cursor:pointer;touch-action:manipulation}
+    .client-item:active{background:var(--dark2);border-color:var(--gold-dim)}
+    .client-avatar{width:46px;height:46px;border-radius:50%;background:var(--dark3);border:1.5px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--gold);flex-shrink:0}
+    .client-info{flex:1;min-width:0}
+    .client-name{font-size:15px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .client-meta{font-size:12px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .client-badge{background:var(--gold-faint);color:var(--gold);border-radius:20px;padding:4px 11px;font-size:12px;font-weight:500;flex-shrink:0;border:1px solid var(--border2)}
+    .client-badge.zero{background:rgba(100,90,70,.15);color:var(--text-dim);border-color:rgba(100,90,70,.25)}
+
+    .sale-item{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+    .sale-price{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--gold);white-space:nowrap}
+    .sale-date{font-size:12px;color:var(--text-dim)}
+    .prod-tag{display:inline-block;background:var(--dark3);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:12px;color:var(--text-muted);margin:2px 3px 0 0}
+    .delivery-tag{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500}
+    .delivery-tag.envio{background:rgba(100,180,255,0.12);color:#7EC8FF;border:1px solid rgba(100,180,255,0.25)}
+    .delivery-tag.retiro{background:rgba(120,200,120,0.12);color:#7DC97D;border:1px solid rgba(120,200,120,0.25)}
+
+    .product-row{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+    .product-row-top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:10px}
+    .product-row-bottom{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .remove-btn{background:rgba(180,50,50,.15);color:#E07070;border:1px solid rgba(180,50,50,.3);border-radius:9px;cursor:pointer;font-size:20px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation}
+    .remove-btn:active{opacity:.7}
+    .add-product-btn{background:var(--gold-faint);color:var(--gold);border:1px dashed var(--gold-dim);border-radius:11px;padding:12px;width:100%;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:12px;touch-action:manipulation}
+    .add-product-btn:active{background:var(--gold-faint2)}
+
+    .toggle-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .toggle-opt{border:1px solid var(--border2);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:14px;font-weight:500;color:var(--text-muted);background:var(--dark2);transition:all .15s;touch-action:manipulation}
+    .toggle-opt.active-retiro{border-color:#7DC97D;color:#7DC97D;background:rgba(120,200,120,0.1)}
+    .toggle-opt.active-envio{border-color:#7EC8FF;color:#7EC8FF;background:rgba(100,180,255,0.1)}
+
+    .detail-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .detail-avatar{width:56px;height:56px;border-radius:50%;background:var(--dark3);border:2px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);flex-shrink:0}
+    .detail-info h2{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--gold-light)}
+    .detail-meta{font-size:12px;color:var(--text-muted);margin-top:3px}
+    .info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px}
+    .info-row:last-child{border-bottom:none}
+    .info-label{color:var(--text-muted);flex-shrink:0}
+    .info-val{color:var(--text);font-weight:500;text-align:right;word-break:break-word}
+
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .stat-card{background:var(--dark);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+    .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);display:block;line-height:1}
+    .stat-label{font-size:11px;color:var(--text-muted);margin-top:5px;text-transform:uppercase;letter-spacing:.6px}
+
+    .search-wrap{position:relative;margin-bottom:12px}
+    .search-wrap input{padding-left:42px}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px}
+    .back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--gold);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:14px;font-family:'DM Sans',sans-serif;padding:8px 0;touch-action:manipulation}
+    .divider{height:1px;background:var(--border);margin:14px 0}
+    .flex-row{display:flex;gap:8px;flex-wrap:wrap}
+    .flex-row .btn-sm{flex:1;text-align:center}
+    .total-row{display:flex;justify-content:space-between;align-items:center;background:var(--gold-faint);border:1px solid var(--border2);border-radius:12px;padding:12px 16px;margin-top:12px}
+    .total-row span:first-child{font-size:14px;color:var(--text-muted)}
+    .total-row span:last-child{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--gold);font-weight:600}
+    .section-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);margin-bottom:10px;font-weight:500}
+    .empty-state{text-align:center;padding:44px 20px;color:var(--text-muted)}
+    .empty-icon{font-size:44px;margin-bottom:12px}
+    .empty-state p{font-size:14px;line-height:1.6}
+    .legend-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px}
+    .legend-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+    .success-toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%);background:var(--dark3);color:var(--gold);padding:11px 22px;border-radius:30px;border:1px solid var(--gold-dim);font-size:14px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+    .success-toast.show{opacity:1}
+    .backup-bar{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .backup-bar span{font-size:12px;color:var(--text-muted);flex:1;min-width:120px}
+    .cp-status{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+    .cp-info{font-size:11px;margin-top:4px;min-height:16px;color:var(--text-muted)}
+  </style>
+</head>
+<body>
+<div id="app" style="display:flex;flex-direction:column;height:100vh">
+  <div class="header">
+    <div class="logo-wrap">
+      <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="50" cy="18" rx="12" ry="12" fill="#C9A84C"/>
+        <path d="M50 28 C30 28 14 42 14 58 C14 72 24 82 38 86 C44 88 50 88 50 88 C50 88 56 88 62 86 C76 82 86 72 86 58 C86 42 70 28 50 28Z" fill="none" stroke="#C9A84C" stroke-width="7"/>
+        <path d="M50 88 C40 88 30 80 30 68 C30 56 40 50 50 50 C60 50 70 56 70 68 C70 80 60 88 50 88Z" fill="none" stroke="#C9A84C" stroke-width="6"/>
+        <path d="M38 54 C38 54 50 42 62 54 C70 62 68 74 60 80 L50 88 L40 80 C32 74 30 62 38 54Z" fill="#C9A84C" opacity="0.35"/>
+        <path d="M50 88 L50 110" stroke="#C9A84C" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="50" cy="115" rx="5" ry="6" fill="#C9A84C"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>Entre Nudos</h1>
+      <p>Accesorios con intención</p>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><span class="hstat-num" id="hstat-clients">0</span><span class="hstat-lbl">Clientes</span></div>
+      <div class="hstat"><span class="hstat-num" id="hstat-sales">0</span><span class="hstat-lbl">Ventas</span></div>
+    </div>
+  </div>
+  <div class="content-wrap" id="scroller"><div class="content" id="content"></div></div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="setTab('clients')" id="tab-clients"><span class="nav-icon">👥</span>Clientes</button>
+    <button class="nav-btn" onclick="setTab('new-sale')" id="tab-new-sale"><span class="nav-icon">✨</span>Venta</button>
+    <button class="nav-btn" onclick="setTab('sales')" id="tab-sales"><span class="nav-icon">🧾</span>Historial</button>
+    <button class="nav-btn" onclick="setTab('stats')" id="tab-stats"><span class="nav-icon">📊</span>Resumen</button>
+  </nav>
+</div>
+<div class="success-toast" id="toast"></div>
+
+<script>
+let db=JSON.parse(localStorage.getItem('entrenudos_v3')||'{"clients":[],"sales":[]}');
+let currentTab='clients',selectedClient=null,saleProducts=[{name:'',qty:1,price:''}];
+let saleDelivery='retiro',editingSaleId=null;
+
+function save(){localStorage.setItem('entrenudos_v3',JSON.stringify(db));updateHeader()}
+function updateHeader(){
+  document.getElementById('hstat-clients').textContent=db.clients.length;
+  document.getElementById('hstat-sales').textContent=db.sales.length;
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function scrollTop(){const s=document.getElementById('scroller');if(s)s.scrollTop=0}
+function initials(n,l){return((n||'?')[0]+(l||'?')[0]).toUpperCase()}
+function formatDate(d){return new Date(d+'T12:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'})}
+function fmoney(n){return '$'+Number(n).toLocaleString('es-AR')}
+function csales(cid){return db.sales.filter(s=>s.clientId===cid)}
+function ctotal(cid){return csales(cid).reduce((a,s)=>a+stotal(s),0)}
+function stotal(s){return s.items.reduce((a,i)=>a+i.price*i.qty,0)}
+
+function setTab(t){
+  currentTab=t;selectedClient=null;editingSaleId=null;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('tab-'+t);if(el)el.classList.add('active');
+  render();scrollTop();
+}
+function render(){
+  const c=document.getElementById('content');
+  if(currentTab==='clients') c.innerHTML=renderClients();
+  else if(currentTab==='new-client') c.innerHTML=renderNewClientForm();
+  else if(currentTab==='client-detail') c.innerHTML=renderClientDetail();
+  else if(currentTab==='edit-client') c.innerHTML=renderEditClientForm();
+  else if(currentTab==='new-sale') c.innerHTML=renderNewSaleForm();
+  else if(currentTab==='edit-sale') c.innerHTML=renderEditSaleForm();
+  else if(currentTab==='sales') c.innerHTML=renderSales();
+  else if(currentTab==='stats'){c.innerHTML=renderStats();setTimeout(drawCharts,120);}
+  updateHeader();
+}
+
+/* BACKUP */
+function exportBackup(){
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='entrenudos_respaldo_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();URL.revokeObjectURL(url);toast('✅ Respaldo descargado');
+}
+function importBackup(){
+  const input=document.createElement('input');input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const p=JSON.parse(ev.target.result);
+        if(!p.clients||!p.sales){toast('⚠️ Archivo inválido');return}
+        if(!confirm('¿Reemplazar todos los datos con este respaldo?'))return;
+        db=p;save();toast('✅ Datos restaurados');render();
+      }catch(e){toast('⚠️ Error al leer el archivo')}
+    };reader.readAsText(file);
+  };input.click();
+}
+
+/* CP LOOKUP — tabla local */
+const CP_TABLE={
+  '1000':'Buenos Aires, CABA','1001':'Buenos Aires, CABA','1002':'Buenos Aires, CABA','1003':'Buenos Aires, CABA',
+  '1004':'Buenos Aires, CABA','1005':'Buenos Aires, CABA','1006':'Buenos Aires, CABA','1007':'Buenos Aires, CABA',
+  '1008':'Buenos Aires, CABA','1009':'Buenos Aires, CABA','1010':'Buenos Aires, CABA','1011':'Buenos Aires, CABA',
+  '1012':'Buenos Aires, CABA','1013':'Buenos Aires, CABA','1014':'Buenos Aires, CABA','1015':'Buenos Aires, CABA',
+  '1016':'Buenos Aires, CABA','1017':'Buenos Aires, CABA','1018':'Buenos Aires, CABA','1019':'Buenos Aires, CABA',
+  '1020':'Buenos Aires, CABA','1021':'Buenos Aires, CABA','1022':'Buenos Aires, CABA','1023':'Buenos Aires, CABA',
+  '1024':'Buenos Aires, CABA','1025':'Buenos Aires, CABA','1026':'Buenos Aires, CABA','1027':'Buenos Aires, CABA',
+  '1028':'Buenos Aires, CABA','1029':'Buenos Aires, CABA','1030':'Buenos Aires, CABA','1031':'Buenos Aires, CABA',
+  '1032':'Buenos Aires, CABA','1033':'Buenos Aires, CABA','1034':'Buenos Aires, CABA','1035':'Buenos Aires, CABA',
+  '1036':'Buenos Aires, CABA','1037':'Buenos Aires, CABA','1038':'Buenos Aires, CABA','1039':'Buenos Aires, CABA',
+  '1040':'Buenos Aires, CABA','1041':'Buenos Aires, CABA','1042':'Buenos Aires, CABA','1043':'Buenos Aires, CABA',
+  '1044':'Buenos Aires, CABA','1045':'Buenos Aires, CABA','1046':'Buenos Aires, CABA','1047':'Buenos Aires, CABA',
+  '1048':'Buenos Aires, CABA','1049':'Buenos Aires, CABA','1050':'Buenos Aires, CABA','1051':'Buenos Aires, CABA',
+  '1052':'Buenos Aires, CABA','1053':'Buenos Aires, CABA','1054':'Buenos Aires, CABA','1055':'Buenos Aires, CABA',
+  '1056':'Buenos Aires, CABA','1057':'Buenos Aires, CABA','1058':'Buenos Aires, CABA','1059':'Buenos Aires, CABA',
+  '1060':'Buenos Aires, CABA','1061':'Buenos Aires, CABA','1062':'Buenos Aires, CABA','1063':'Buenos Aires, CABA',
+  '1064':'Buenos Aires, CABA','1065':'Buenos Aires, CABA','1066':'Buenos Aires, CABA','1067':'Buenos Aires, CABA',
+  '1068':'Buenos Aires, CABA','1069':'Buenos Aires, CABA','1070':'Buenos Aires, CABA','1071':'Buenos Aires, CABA',
+  '1072':'Buenos Aires, CABA','1073':'Buenos Aires, CABA','1074':'Buenos Aires, CABA','1075':'Buenos Aires, CABA',
+  '1076':'Buenos Aires, CABA','1077':'Buenos Aires, CABA','1078':'Buenos Aires, CABA','1079':'Buenos Aires, CABA',
+  '1080':'Buenos Aires, CABA','1081':'Buenos Aires, CABA','1082':'Buenos Aires, CABA','1083':'Buenos Aires, CABA',
+  '1084':'Buenos Aires, CABA','1085':'Buenos Aires, CABA','1086':'Buenos Aires, CABA','1087':'Buenos Aires, CABA',
+  '1088':'Buenos Aires, CABA','1089':'Buenos Aires, CABA','1090':'Buenos Aires, CABA','1091':'Buenos Aires, CABA',
+  '1092':'Buenos Aires, CABA','1093':'Buenos Aires, CABA','1094':'Buenos Aires, CABA','1095':'Buenos Aires, CABA',
+  '1096':'Buenos Aires, CABA','1097':'Buenos Aires, CABA','1098':'Buenos Aires, CABA','1099':'Buenos Aires, CABA',
+  '1100':'Buenos Aires, CABA','1101':'Buenos Aires, CABA','1102':'Buenos Aires, CABA','1103':'Buenos Aires, CABA',
+  '1104':'Buenos Aires, CABA','1105':'Buenos Aires, CABA','1106':'Buenos Aires, CABA','1107':'Buenos Aires, CABA',
+  '1108':'Buenos Aires, CABA','1109':'Buenos Aires, CABA','1110':'Buenos Aires, CABA','1111':'Buenos Aires, CABA',
+  '1112':'Buenos Aires, CABA','1113':'Buenos Aires, CABA','1114':'Buenos Aires, CABA','1115':'Buenos Aires, CABA',
+  '1116':'Buenos Aires, CABA','1117':'Buenos Aires, CABA','1118':'Buenos Aires, CABA','1119':'Buenos Aires, CABA',
+  '1120':'Buenos Aires, CABA','1121':'Buenos Aires, CABA','1122':'Buenos Aires, CABA','1123':'Buenos Aires, CABA',
+  '1124':'Buenos Aires, CABA','1125':'Buenos Aires, CABA','1126':'Buenos Aires, CABA','1127':'Buenos Aires, CABA',
+  '1128':'Buenos Aires, CABA','1129':'Buenos Aires, CABA','1130':'Buenos Aires, CABA','1131':'Buenos Aires, CABA',
+  '1132':'Buenos Aires, CABA','1133':'Buenos Aires, CABA','1134':'Buenos Aires, CABA','1135':'Buenos Aires, CABA',
+  '1136':'Buenos Aires, CABA','1137':'Buenos Aires, CABA','1138':'Buenos Aires, CABA','1139':'Buenos Aires, CABA',
+  '1140':'Buenos Aires, CABA','1141':'Buenos Aires, CABA','1142':'Buenos Aires, CABA','1143':'Buenos Aires, CABA',
+  '1144':'Buenos Aires, CABA','1145':'Buenos Aires, CABA','1146':'Buenos Aires, CABA','1147':'Buenos Aires, CABA',
+  '1148':'Buenos Aires, CABA','1149':'Buenos Aires, CABA','1150':'Buenos Aires, CABA','1151':'Buenos Aires, CABA',
+  '1152':'Buenos Aires, CABA','1153':'Buenos Aires, CABA','1154':'Buenos Aires, CABA','1155':'Buenos Aires, CABA',
+  '1156':'Buenos Aires, CABA','1157':'Buenos Aires, CABA','1158':'Buenos Aires, CABA','1159':'Buenos Aires, CABA',
+  '1160':'Buenos Aires, CABA','1161':'Buenos Aires, CABA','1162':'Buenos Aires, CABA','1163':'Buenos Aires, CABA',
+  '1164':'Buenos Aires, CABA','1165':'Buenos Aires, CABA','1166':'Buenos Aires, CABA','1167':'Buenos Aires, CABA',
+  '1168':'Buenos Aires, CABA','1169':'Buenos Aires, CABA','1170':'Buenos Aires, CABA','1171':'Buenos Aires, CABA',
+  '1172':'Buenos Aires, CABA','1173':'Buenos Aires, CABA','1174':'Buenos Aires, CABA','1175':'Buenos Aires, CABA',
+  '1176':'Buenos Aires, CABA','1177':'Buenos Aires, CABA','1178':'Buenos Aires, CABA','1179':'Buenos Aires, CABA',
+  '1180':'Buenos Aires, CABA','1181':'Buenos Aires, CABA','1182':'Buenos Aires, CABA','1183':'Buenos Aires, CABA',
+  '1184':'Buenos Aires, CABA','1185':'Buenos Aires, CABA','1186':'Buenos Aires, CABA','1187':'Buenos Aires, CABA',
+  '1188':'Buenos Aires, CABA','1189':'Buenos Aires, CABA','1190':'Buenos Aires, CABA','1191':'Buenos Aires, CABA',
+  '1192':'Buenos Aires, CABA','1193':'Buenos Aires, CABA','1194':'Buenos Aires, CABA','1195':'Buenos Aires, CABA',
+  '1196':'Buenos Aires, CABA','1197':'Buenos Aires, CABA','1198':'Buenos Aires, CABA','1199':'Buenos Aires, CABA',
+  '1200':'Buenos Aires, CABA','1201':'Buenos Aires, CABA','1202':'Buenos Aires, CABA','1203':'Buenos Aires, CABA',
+  '1204':'Buenos Aires, CABA','1205':'Buenos Aires, CABA','1206':'Buenos Aires, CABA','1207':'Buenos Aires, CABA',
+  '1208':'Buenos Aires, CABA','1209':'Buenos Aires, CABA','1210':'Buenos Aires, CABA','1211':'Buenos Aires, CABA',
+  '1212':'Buenos Aires, CABA','1213':'Buenos Aires, CABA','1214':'Buenos Aires, CABA','1215':'Buenos Aires, CABA',
+  '1216':'Buenos Aires, CABA','1217':'Buenos Aires, CABA','1218':'Buenos Aires, CABA','1219':'Buenos Aires, CABA',
+  '1220':'Buenos Aires, CABA','1221':'Buenos Aires, CABA','1222':'Buenos Aires, CABA','1223':'Buenos Aires, CABA',
+  '1224':'Buenos Aires, CABA','1225':'Buenos Aires, CABA','1226':'Buenos Aires, CABA','1227':'Buenos Aires, CABA',
+  '1228':'Buenos Aires, CABA','1229':'Buenos Aires, CABA','1230':'Buenos Aires, CABA','1231':'Buenos Aires, CABA',
+  '1232':'Buenos Aires, CABA','1233':'Buenos Aires, CABA','1234':'Buenos Aires, CABA','1235':'Buenos Aires, CABA',
+  '1236':'Buenos Aires, CABA','1237':'Buenos Aires, CABA','1238':'Buenos Aires, CABA','1239':'Buenos Aires, CABA',
+  '1240':'Buenos Aires, CABA','1241':'Buenos Aires, CABA','1242':'Buenos Aires, CABA','1243':'Buenos Aires, CABA',
+  '1244':'Buenos Aires, CABA','1245':'Buenos Aires, CABA','1246':'Buenos Aires, CABA','1247':'Buenos Aires, CABA',
+  '1248':'Buenos Aires, CABA','1249':'Buenos Aires, CABA','1250':'Buenos Aires, CABA','1251':'Buenos Aires, CABA',
+  '1252':'Buenos Aires, CABA','1253':'Buenos Aires, CABA','1254':'Buenos Aires, CABA','1255':'Buenos Aires, CABA',
+  '1256':'Buenos Aires, CABA','1257':'Buenos Aires, CABA','1258':'Buenos Aires, CABA','1259':'Buenos Aires, CABA',
+  '1260':'Buenos Aires, CABA','1261':'Buenos Aires, CABA','1262':'Buenos Aires, CABA','1263':'Buenos Aires, CABA',
+  '1264':'Buenos Aires, CABA','1265':'Buenos Aires, CABA','1266':'Buenos Aires, CABA','1267':'Buenos Aires, CABA',
+  '1268':'Buenos Aires, CABA','1269':'Buenos Aires, CABA','1270':'Buenos Aires, CABA','1271':'Buenos Aires, CABA',
+  '1272':'Buenos Aires, CABA','1273':'Buenos Aires, CABA','1274':'Buenos Aires, CABA','1275':'Buenos Aires, CABA',
+  '1276':'Buenos Aires, CABA','1277':'Buenos Aires, CABA','1278':'Buenos Aires, CABA','1279':'Buenos Aires, CABA',
+  '1280':'Buenos Aires, CABA','1281':'Buenos Aires, CABA','1282':'Buenos Aires, CABA','1283':'Buenos Aires, CABA',
+  '1284':'Buenos Aires, CABA','1285':'Buenos Aires, CABA','1286':'Buenos Aires, CABA','1287':'Buenos Aires, CABA',
+  '1288':'Buenos Aires, CABA','1289':'Buenos Aires, CABA','1290':'Buenos Aires, CABA','1291':'Buenos Aires, CABA',
+  '1292':'Buenos Aires, CABA','1293':'Buenos Aires, CABA','1294':'Buenos Aires, CABA','1295':'Buenos Aires, CABA',
+  '1296':'Buenos Aires, CABA','1297':'Buenos Aires, CABA','1298':'Buenos Aires, CABA','1299':'Buenos Aires, CABA',
+  '1300':'Buenos Aires, CABA','1301':'Buenos Aires, CABA','1302':'Buenos Aires, CABA','1303':'Buenos Aires, CABA',
+  '1304':'Buenos Aires, CABA','1305':'Buenos Aires, CABA','1306':'Buenos Aires, CABA','1307':'Buenos Aires, CABA',
+  '1308':'Buenos Aires, CABA','1309':'Buenos Aires, CABA','1310':'Buenos Aires, CABA','1311':'Buenos Aires, CABA',
+  '1312':'Buenos Aires, CABA','1313':'Buenos Aires, CABA','1314':'Buenos Aires, CABA','1315':'Buenos Aires, CABA',
+  '1316':'Buenos Aires, CABA','1317':'Buenos Aires, CABA','1318':'Buenos Aires, CABA','1319':'Buenos Aires, CABA',
+  '1320':'Buenos Aires, CABA','1321':'Buenos Aires, CABA','1322':'Buenos Aires, CABA','1323':'Buenos Aires, CABA',
+  '1324':'Buenos Aires, CABA','1325':'Buenos Aires, CABA','1326':'Buenos Aires, CABA','1327':'Buenos Aires, CABA',
+  '1328':'Buenos Aires, CABA','1329':'Buenos Aires, CABA','1330':'Buenos Aires, CABA','1331':'Buenos Aires, CABA',
+  '1332':'Buenos Aires, CABA','1333':'Buenos Aires, CABA','1334':'Buenos Aires, CABA','1335':'Buenos Aires, CABA',
+  '1336':'Buenos Aires, CABA','1337':'Buenos Aires, CABA','1338':'Buenos Aires, CABA','1339':'Buenos Aires, CABA',
+  '1340':'Buenos Aires, CABA','1341':'Buenos Aires, CABA','1342':'Buenos Aires, CABA','1343':'Buenos Aires, CABA',
+  '1344':'Buenos Aires, CABA','1345':'Buenos Aires, CABA','1346':'Buenos Aires, CABA','1347':'Buenos Aires, CABA',
+  '1348':'Buenos Aires, CABA','1349':'Buenos Aires, CABA','1350':'Buenos Aires, CABA','1351':'Buenos Aires, CABA',
+  '1352':'Buenos Aires, CABA','1353':'Buenos Aires, CABA','1354':'Buenos Aires, CABA','1355':'Buenos Aires, CABA',
+  '1356':'Buenos Aires, CABA','1357':'Buenos Aires, CABA','1358':'Buenos Aires, CABA','1359':'Buenos Aires, CABA',
+  '1360':'Buenos Aires, CABA','1361':'Buenos Aires, CABA','1362':'Buenos Aires, CABA','1363':'Buenos Aires, CABA',
+  '1364':'Buenos Aires, CABA','1365':'Buenos Aires, CABA','1366':'Buenos Aires, CABA','1367':'Buenos Aires, CABA',
+  '1368':'Buenos Aires, CABA','1369':'Buenos Aires, CABA','1370':'Buenos Aires, CABA','1371':'Buenos Aires, CABA',
+  '1372':'Buenos Aires, CABA','1373':'Buenos Aires, CABA','1374':'Buenos Aires, CABA','1375':'Buenos Aires, CABA',
+  '1376':'Buenos Aires, CABA','1377':'Buenos Aires, CABA','1378':'Buenos Aires, CABA','1379':'Buenos Aires, CABA',
+  '1380':'Buenos Aires, CABA','1381':'Buenos Aires, CABA','1382':'Buenos Aires, CABA','1383':'Buenos Aires, CABA',
+  '1384':'Buenos Aires, CABA','1385':'Buenos Aires, CABA','1386':'Buenos Aires, CABA','1387':'Buenos Aires, CABA',
+  '1388':'Buenos Aires, CABA','1389':'Buenos Aires, CABA','1390':'Buenos Aires, CABA','1391':'Buenos Aires, CABA',
+  '1392':'Buenos Aires, CABA','1393':'Buenos Aires, CABA','1394':'Buenos Aires, CABA','1395':'Buenos Aires, CABA',
+  '1396':'Buenos Aires, CABA','1397':'Buenos Aires, CABA','1398':'Buenos Aires, CABA','1399':'Buenos Aires, CABA',
+  '1400':'Buenos Aires, CABA','1401':'Buenos Aires, CABA','1402':'Buenos Aires, CABA','1403':'Buenos Aires, CABA',
+  '1404':'Buenos Aires, CABA','1405':'Buenos Aires, CABA','1406':'Buenos Aires, CABA','1407':'Buenos Aires, CABA',
+  '1408':'Buenos Aires, CABA','1409':'Buenos Aires, CABA','1410':'Buenos Aires, CABA','1411':'Buenos Aires, CABA',
+  '1412':'Buenos Aires, CABA','1413':'Buenos Aires, CABA','1414':'Buenos Aires, CABA','1415':'Buenos Aires, CABA',
+  '1416':'Buenos Aires, CABA','1417':'Buenos Aires, CABA','1418':'Buenos Aires, CABA','1419':'Buenos Aires, CABA',
+  '1420':'Buenos Aires, CABA','1421':'Buenos Aires, CABA','1422':'Buenos Aires, CABA','1423':'Buenos Aires, CABA',
+  '1424':'Buenos Aires, CABA','1425':'Buenos Aires, CABA','1426':'Buenos Aires, CABA','1427':'Buenos Aires, CABA',
+  '1428':'Buenos Aires, CABA','1429':'Buenos Aires, CABA','1430':'Buenos Aires, CABA','1431':'Buenos Aires, CABA',
+  '1432':'Buenos Aires, CABA','1433':'Buenos Aires, CABA','1434':'Buenos Aires, CABA','1435':'Buenos Aires, CABA',
+  '1436':'Buenos Aires, CABA','1437':'Buenos Aires, CABA','1438':'Buenos Aires, CABA','1439':'Buenos Aires, CABA',
+  '1440':'Buenos Aires, CABA','1441':'Buenos Aires, CABA','1442':'Buenos Aires, CABA','1443':'Buenos Aires, CABA',
+  '1444':'Buenos Aires, CABA','1445':'Buenos Aires, CABA','1446':'Buenos Aires, CABA','1447':'Buenos Aires, CABA',
+  '1448':'Buenos Aires, CABA','1449':'Buenos Aires, CABA','1450':'Buenos Aires, CABA','1451':'Buenos Aires, CABA',
+  '1452':'Buenos Aires, CABA','1453':'Buenos Aires, CABA','1454':'Buenos Aires, CABA','1455':'Buenos Aires, CABA',
+  '1456':'Buenos Aires, CABA','1457':'Buenos Aires, CABA','1458':'Buenos Aires, CABA','1459':'Buenos Aires, CABA',
+  '1460':'Buenos Aires, CABA','1461':'Buenos Aires, CABA','1462':'Buenos Aires, CABA','1463':'Buenos Aires, CABA',
+  '1464':'Buenos Aires, CABA','1465':'Buenos Aires, CABA','1466':'Buenos Aires, CABA','1467':'Buenos Aires, CABA',
+  '1468':'Buenos Aires, CABA','1469':'Buenos Aires, CABA','1470':'Buenos Aires, CABA','1471':'Buenos Aires, CABA',
+  '1472':'Buenos Aires, CABA','1473':'Buenos Aires, CABA','1474':'Buenos Aires, CABA','1475':'Buenos Aires, CABA',
+  '1476':'Buenos Aires, CABA','1477':'Buenos Aires, CABA','1478':'Buenos Aires, CABA','1479':'Buenos Aires, CABA',
+  '1480':'Buenos Aires, CABA','1481':'Buenos Aires, CABA','1482':'Buenos Aires, CABA','1483':'Buenos Aires, CABA',
+  '1484':'Buenos Aires, CABA','1485':'Buenos Aires, CABA','1486':'Buenos Aires, CABA','1487':'Buenos Aires, CABA',
+  '1488':'Buenos Aires, CABA','1489':'Buenos Aires, CABA','1490':'Buenos Aires, CABA','1491':'Buenos Aires, CABA',
+  '1492':'Buenos Aires, CABA','1493':'Buenos Aires, CABA','1494':'Buenos Aires, CABA','1495':'Buenos Aires, CABA',
+  '1496':'Buenos Aires, CABA','1497':'Buenos Aires, CABA','1498':'Buenos Aires, CABA','1499':'Buenos Aires, CABA',
+  // GBA Norte
+  '1600':'Vicente López, Buenos Aires','1601':'Villa Martelli, Buenos Aires','1602':'Florida, Buenos Aires',
+  '1603':'Villa Adelina, Buenos Aires','1604':'Don Torcuato, Buenos Aires','1605':'Munro, Buenos Aires',
+  '1606':'Carapachay, Buenos Aires','1607':'Villa Ballester, Buenos Aires','1608':'San Isidro, Buenos Aires',
+  '1609':'Boulogne, Buenos Aires','1610':'Ingeniero Maschwitz, Buenos Aires','1611':'Don Torcuato, Buenos Aires',
+  '1612':'Villa del Parque, Buenos Aires','1613':'Los Polvorines, Buenos Aires','1614':'Grand Bourg, Buenos Aires',
+  '1615':'Grand Bourg, Buenos Aires','1616':'Pablo Nogués, Buenos Aires','1617':'General Pacheco, Buenos Aires',
+  '1618':'El Talar, Buenos Aires','1619':'Garín, Buenos Aires','1620':'José León Suárez, Buenos Aires',
+  '1621':'Olivos, Buenos Aires','1622':'Olivos, Buenos Aires','1623':'Olivos, Buenos Aires',
+  '1624':'Villa Bosch, Buenos Aires','1625':'Palermo, Buenos Aires','1626':'Villa de Mayo, Buenos Aires',
+  '1627':'Tortuguitas, Buenos Aires','1628':'Benavídez, Buenos Aires','1629':'Tigre, Buenos Aires',
+  '1630':'Tigre, Buenos Aires','1631':'Tigre, Buenos Aires','1632':'Tigre, Buenos Aires',
+  '1633':'Tigre, Buenos Aires','1634':'Tigre, Buenos Aires','1635':'Tigre, Buenos Aires',
+  '1636':'La Lucila, Buenos Aires','1637':'La Lucila, Buenos Aires','1638':'Vicente López, Buenos Aires',
+  '1639':'Vicente López, Buenos Aires','1640':'Martínez, Buenos Aires','1641':'Martínez, Buenos Aires',
+  '1642':'San Isidro, Buenos Aires','1643':'Beccar, Buenos Aires','1644':'Victoria, Buenos Aires',
+  '1645':'San Fernando, Buenos Aires','1646':'San Fernando, Buenos Aires','1647':'San Fernando, Buenos Aires',
+  '1648':'Tigre, Buenos Aires','1649':'Tigre, Buenos Aires','1650':'San Martín, Buenos Aires',
+  '1651':'San Andrés, Buenos Aires','1652':'Villa Lynch, Buenos Aires','1653':'Villa Maipú, Buenos Aires',
+  '1654':'San Martín, Buenos Aires','1655':'José León Suárez, Buenos Aires','1656':'Villa Lanús, Buenos Aires',
+  '1657':'Palermo, Buenos Aires','1658':'Villa Tesei, Buenos Aires','1659':'Villa Tesei, Buenos Aires',
+  '1660':'El Palomar, Buenos Aires','1661':'El Palomar, Buenos Aires','1662':'El Palomar, Buenos Aires',
+  '1663':'El Palomar, Buenos Aires','1664':'Palermo, Buenos Aires','1665':'Palermo, Buenos Aires',
+  '1666':'San Miguel, Buenos Aires','1667':'San Miguel, Buenos Aires','1668':'San Miguel, Buenos Aires',
+  '1669':'San Miguel, Buenos Aires','1670':'Palermo, Buenos Aires','1671':'Palermo, Buenos Aires',
+  '1672':'Villa del Parque, Buenos Aires','1673':'Palermo, Buenos Aires','1674':'Palermo, Buenos Aires',
+  '1675':'Palermo, Buenos Aires','1676':'Palermo, Buenos Aires',
+  // GBA Oeste
+  '1700':'Haedo, Buenos Aires','1701':'La Tablada, Buenos Aires','1702':'Ciudadela, Buenos Aires',
+  '1703':'Las Lomitas, Buenos Aires','1704':'Ramos Mejía, Buenos Aires','1705':'Palermo, Buenos Aires',
+  '1706':'Ituzaingó, Buenos Aires','1707':'Ituzaingó, Buenos Aires','1708':'Morón, Buenos Aires',
+  '1709':'Morón, Buenos Aires','1710':'Morón, Buenos Aires','1711':'Castelar, Buenos Aires',
+  '1712':'Castelar, Buenos Aires','1713':'El Palomar, Buenos Aires','1714':'Ituzaingó, Buenos Aires',
+  '1715':'Merlo, Buenos Aires','1716':'Merlo, Buenos Aires','1717':'Merlo, Buenos Aires',
+  '1718':'San Antonio de Padua, Buenos Aires','1719':'Marcos Paz, Buenos Aires',
+  '1720':'Palermo, Buenos Aires','1721':'Palermo, Buenos Aires','1722':'Palermo, Buenos Aires',
+  '1723':'Palermo, Buenos Aires','1724':'Palermo, Buenos Aires','1725':'Palermo, Buenos Aires',
+  '1726':'Palermo, Buenos Aires','1727':'Palermo, Buenos Aires','1728':'Palermo, Buenos Aires',
+  '1729':'Palermo, Buenos Aires','1730':'Palermo, Buenos Aires',
+  // GBA Sur
+  '1800':'Lanús, Buenos Aires','1801':'Lanús Oeste, Buenos Aires','1802':'Lanús Este, Buenos Aires',
+  '1820':'Remedios de Escalada, Buenos Aires','1822':'Valentín Alsina, Buenos Aires',
+  '1824':'Lanús, Buenos Aires','1826':'Villa Centenario, Buenos Aires','1828':'Banfield, Buenos Aires',
+  '1832':'Lomas de Zamora, Buenos Aires','1834':'Turdera, Buenos Aires','1836':'Temperley, Buenos Aires',
+  '1838':'Longchamps, Buenos Aires','1840':'Monte Grande, Buenos Aires','1842':'Monte Grande, Buenos Aires',
+  '1844':'Monte Grande, Buenos Aires','1846':'Adrogué, Buenos Aires','1848':'Burzaco, Buenos Aires',
+  '1850':'Quilmes, Buenos Aires','1852':'Berazategui, Buenos Aires','1854':'Dock Sud, Buenos Aires',
+  '1856':'Wilde, Buenos Aires','1870':'Avellaneda, Buenos Aires','1872':'Sarandí, Buenos Aires',
+  '1874':'Villa Domínico, Buenos Aires','1876':'Piñeyro, Buenos Aires','1878':'Gerli, Buenos Aires',
+  '1880':'Bosques, Buenos Aires','1882':'Quilmes, Buenos Aires','1884':'Quilmes, Buenos Aires',
+  '1886':'Quilmes, Buenos Aires','1888':'Florencio Varela, Buenos Aires','1890':'Glew, Buenos Aires',
+  '1894':'Canning, Buenos Aires','1896':'Ezeiza, Buenos Aires','1900':'La Plata, Buenos Aires',
+  '1901':'La Plata, Buenos Aires','1902':'La Plata, Buenos Aires','1903':'La Plata, Buenos Aires',
+  '1904':'La Plata, Buenos Aires','1905':'La Plata, Buenos Aires','1906':'La Plata, Buenos Aires',
+  '1907':'La Plata, Buenos Aires','1908':'La Plata, Buenos Aires','1909':'La Plata, Buenos Aires',
+  '1910':'La Plata, Buenos Aires','1911':'La Plata, Buenos Aires','1912':'La Plata, Buenos Aires',
+  '1913':'La Plata, Buenos Aires','1914':'La Plata, Buenos Aires','1915':'La Plata, Buenos Aires',
+  '1916':'La Plata, Buenos Aires','1917':'La Plata, Buenos Aires','1918':'La Plata, Buenos Aires',
+  '1919':'La Plata, Buenos Aires','1920':'La Plata, Buenos Aires','1925':'Berisso, Buenos Aires',
+  '1930':'Ensenada, Buenos Aires',
+  // Interior Buenos Aires
+  '2000':'Rosario, Santa Fe','2001':'Rosario, Santa Fe','2002':'Rosario, Santa Fe',
+  '2003':'Rosario, Santa Fe','2004':'Rosario, Santa Fe','2005':'Rosario, Santa Fe',
+  '2006':'Rosario, Santa Fe','2007':'Rosario, Santa Fe','2008':'Rosario, Santa Fe',
+  '2009':'Rosario, Santa Fe','2100':'Villa Constitución, Santa Fe',
+  '2126':'San Nicolás, Buenos Aires','2130':'San Nicolás de los Arroyos, Buenos Aires',
+  '2142':'Ramallo, Buenos Aires','2154':'Baradero, Buenos Aires','2166':'San Pedro, Buenos Aires',
+  '2168':'Zárate, Buenos Aires','2170':'Zárate, Buenos Aires','2172':'Lima, Buenos Aires',
+  '2174':'Campana, Buenos Aires','2176':'Campana, Buenos Aires',
+  '2300':'Rafaela, Santa Fe','2400':'Reconquista, Santa Fe','2500':'Santa Fe, Santa Fe',
+  '2600':'Venado Tuerto, Santa Fe','2700':'Pergamino, Buenos Aires',
+  '2724':'Junín, Buenos Aires','2900':'San Jorge, Santa Fe',
+  '3000':'Santa Fe, Santa Fe','3001':'Santa Fe, Santa Fe','3002':'Santa Fe, Santa Fe',
+  '3003':'Santa Fe, Santa Fe','3004':'Santa Fe, Santa Fe','3005':'Santa Fe, Santa Fe',
+  '3006':'Santa Fe, Santa Fe','3007':'Santa Fe, Santa Fe','3008':'Santa Fe, Santa Fe',
+  '3100':'Paraná, Entre Ríos','3200':'Gualeguaychú, Entre Ríos','3260':'Concepción del Uruguay, Entre Ríos',
+  '3300':'Posadas, Misiones','3360':'Oberá, Misiones','3370':'Eldorado, Misiones',
+  '3400':'Corrientes, Corrientes','3500':'Resistencia, Chaco','3600':'Formosa, Formosa',
+  '3700':'Presidencia Roque Sáenz Peña, Chaco',
+  '4000':'San Miguel de Tucumán, Tucumán','4001':'San Miguel de Tucumán, Tucumán',
+  '4002':'San Miguel de Tucumán, Tucumán','4003':'San Miguel de Tucumán, Tucumán',
+  '4004':'San Miguel de Tucumán, Tucumán','4005':'San Miguel de Tucumán, Tucumán',
+  '4006':'San Miguel de Tucumán, Tucumán','4007':'San Miguel de Tucumán, Tucumán',
+  '4100':'Tafí Viejo, Tucumán','4101':'Tafí Viejo, Tucumán','4107':'Yerba Buena, Tucumán',
+  '4109':'Lules, Tucumán','4111':'Banda del Río Salí, Tucumán','4117':'Famailla, Tucumán',
+  '4119':'Concepción, Tucumán','4132':'Monteros, Tucumán','4137':'Aguilares, Tucumán',
+  '4142':'Graneros, Tucumán','4152':'Alberdi, Tucumán','4153':'Río Seco, Tucumán',
+  '4158':'Simoca, Tucumán','4161':'Burruyacú, Tucumán','4164':'Trancas, Tucumán',
+  '4170':'Amaicha del Valle, Tucumán','4178':'Tafí del Valle, Tucumán',
+  '4186':'Andalgalá, Catamarca','4187':'Belén, Catamarca','4188':'Santa María, Catamarca',
+  '4200':'Santiago del Estero, Santiago del Estero','4201':'Santiago del Estero, Santiago del Estero',
+  '4300':'La Banda, Santiago del Estero','4322':'Añatuya, Santiago del Estero',
+  '4324':'Suncho Corral, Santiago del Estero','4326':'Loreto, Santiago del Estero',
+  '4328':'Fernández, Santiago del Estero','4400':'Salta, Salta','4401':'Salta, Salta',
+  '4402':'Salta, Salta','4403':'Salta, Salta','4404':'Salta, Salta',
+  '4405':'Vaqueros, Salta','4406':'Rosario de Lerma, Salta','4407':'Campo Quijano, Salta',
+  '4408':'Güemes, Salta','4409':'General Güemes, Salta','4410':'Metán, Salta',
+  '4412':'Joaquín V. González, Salta','4416':'Embarcación, Salta','4418':'Tartagal, Salta',
+  '4420':'Orán, Salta','4422':'San Ramón de la Nueva Orán, Salta',
+  '4500':'San Salvador de Jujuy, Jujuy','4501':'San Salvador de Jujuy, Jujuy',
+  '4502':'San Salvador de Jujuy, Jujuy','4600':'San Pedro de Jujuy, Jujuy',
+  '4612':'Libertador General San Martín, Jujuy','4616':'Ledesma, Jujuy',
+  '4624':'La Quiaca, Jujuy','4700':'Catamarca, Catamarca','4701':'Catamarca, Catamarca',
+  '4702':'Catamarca, Catamarca','4705':'Recreo, Catamarca','4707':'San Fernando del Valle de Catamarca, Catamarca',
+  '4800':'La Rioja, La Rioja','4801':'La Rioja, La Rioja','4802':'La Rioja, La Rioja',
+  '4825':'Chilecito, La Rioja','4827':'Famatina, La Rioja',
+  '5000':'Córdoba, Córdoba','5001':'Córdoba, Córdoba','5002':'Córdoba, Córdoba',
+  '5003':'Córdoba, Córdoba','5004':'Córdoba, Córdoba','5005':'Córdoba, Córdoba',
+  '5006':'Córdoba, Córdoba','5007':'Córdoba, Córdoba','5008':'Córdoba, Córdoba',
+  '5009':'Córdoba, Córdoba','5010':'Córdoba, Córdoba','5011':'Córdoba, Córdoba',
+  '5012':'Córdoba, Córdoba','5013':'Córdoba, Córdoba','5014':'Córdoba, Córdoba',
+  '5015':'Córdoba, Córdoba','5016':'Córdoba, Córdoba','5017':'Córdoba, Córdoba',
+  '5100':'Villa Carlos Paz, Córdoba','5101':'Villa Carlos Paz, Córdoba',
+  '5103':'Cosquín, Córdoba','5111':'La Falda, Córdoba','5152':'Alta Gracia, Córdoba',
+  '5154':'Jesús María, Córdoba','5158':'Colonia Caroya, Córdoba',
+  '5164':'Villa María, Córdoba','5172':'Villa Nueva, Córdoba',
+  '5174':'Bell Ville, Córdoba','5178':'Río Cuarto, Córdoba',
+  '5186':'San Francisco, Córdoba',
+  '5200':'Río Cuarto, Córdoba','5201':'Río Cuarto, Córdoba','5202':'Río Cuarto, Córdoba',
+  '5300':'San Luis, San Luis','5400':'San Juan, San Juan','5401':'San Juan, San Juan',
+  '5402':'San Juan, San Juan','5403':'San Juan, San Juan','5404':'San Juan, San Juan',
+  '5405':'San Juan, San Juan','5406':'San Juan, San Juan','5407':'San Juan, San Juan',
+  '5500':'Mendoza, Mendoza','5501':'Mendoza, Mendoza','5502':'Mendoza, Mendoza',
+  '5503':'Mendoza, Mendoza','5504':'Mendoza, Mendoza','5505':'Mendoza, Mendoza',
+  '5506':'Mendoza, Mendoza','5507':'Mendoza, Mendoza','5508':'Mendoza, Mendoza',
+  '5509':'Mendoza, Mendoza','5510':'Mendoza, Mendoza','5511':'Mendoza, Mendoza',
+  '5512':'Mendoza, Mendoza','5513':'Mendoza, Mendoza','5514':'Mendoza, Mendoza',
+  '5515':'Mendoza, Mendoza','5516':'Mendoza, Mendoza','5517':'Mendoza, Mendoza',
+  '5518':'Mendoza, Mendoza','5519':'Mendoza, Mendoza','5520':'Mendoza, Mendoza',
+  '5521':'Mendoza, Mendoza','5522':'Mendoza, Mendoza','5523':'Mendoza, Mendoza',
+  '5524':'Mendoza, Mendoza','5525':'Mendoza, Mendoza','5526':'Mendoza, Mendoza',
+  '5527':'Mendoza, Mendoza','5528':'Mendoza, Mendoza','5529':'Mendoza, Mendoza',
+  '5530':'Mendoza, Mendoza','5600':'San Rafael, Mendoza','5601':'San Rafael, Mendoza',
+  '5700':'San Luis, San Luis','5701':'San Luis, San Luis','5702':'San Luis, San Luis',
+  '5800':'Villa Mercedes, San Luis','5870':'Merlo, San Luis',
+  '6000':'Mercedes, Buenos Aires','6100':'Lincoln, Buenos Aires','6200':'Pehuajó, Buenos Aires',
+  '6300':'Santa Rosa, La Pampa','6360':'General Pico, La Pampa','6400':'Trenque Lauquen, Buenos Aires',
+  '6500':'Olavarría, Buenos Aires','6600':'Azul, Buenos Aires','6700':'Tandil, Buenos Aires',
+  '7000':'Tandil, Buenos Aires','7100':'Dolores, Buenos Aires','7160':'Mar del Plata, Buenos Aires',
+  '7300':'Azul, Buenos Aires','7400':'Olavarría, Buenos Aires','7500':'Tres Arroyos, Buenos Aires',
+  '7600':'Mar del Plata, Buenos Aires','7601':'Mar del Plata, Buenos Aires',
+  '7602':'Mar del Plata, Buenos Aires','7603':'Mar del Plata, Buenos Aires',
+  '7604':'Mar del Plata, Buenos Aires','7605':'Mar del Plata, Buenos Aires',
+  '7606':'Mar del Plata, Buenos Aires','7607':'Mar del Plata, Buenos Aires',
+  '7608':'Mar del Plata, Buenos Aires','7609':'Mar del Plata, Buenos Aires',
+  '7610':'Mar del Plata, Buenos Aires','7611':'Mar del Plata, Buenos Aires',
+  '7620':'Miramar, Buenos Aires','7630':'Necochea, Buenos Aires',
+  '7700':'Necochea, Buenos Aires','7730':'San Cayetano, Buenos Aires',
+  '8000':'Bahía Blanca, Buenos Aires','8001':'Bahía Blanca, Buenos Aires',
+  '8002':'Bahía Blanca, Buenos Aires','8003':'Bahía Blanca, Buenos Aires',
+  '8004':'Bahía Blanca, Buenos Aires','8005':'Bahía Blanca, Buenos Aires',
+  '8006':'Bahía Blanca, Buenos Aires','8007':'Bahía Blanca, Buenos Aires',
+  '8008':'Bahía Blanca, Buenos Aires','8009':'Bahía Blanca, Buenos Aires',
+  '8100':'Punta Alta, Buenos Aires','8103':'Coronel Rosales, Buenos Aires',
+  '8105':'Médanos, Buenos Aires','8107':'Carmen de Patagones, Buenos Aires',
+  '8109':'Viedma, Río Negro','8300':'Neuquén, Neuquén','8301':'Neuquén, Neuquén',
+  '8302':'Neuquén, Neuquén','8303':'Neuquén, Neuquén','8304':'Neuquén, Neuquén',
+  '8305':'Neuquén, Neuquén','8306':'Neuquén, Neuquén','8307':'Neuquén, Neuquén',
+  '8308':'Neuquén, Neuquén','8309':'Neuquén, Neuquén','8310':'Neuquén, Neuquén',
+  '8311':'Neuquén, Neuquén','8312':'Neuquén, Neuquén','8313':'Neuquén, Neuquén',
+  '8314':'Neuquén, Neuquén','8315':'Neuquén, Neuquén','8316':'Neuquén, Neuquén',
+  '8317':'Neuquén, Neuquén','8318':'Neuquén, Neuquén','8319':'Neuquén, Neuquén',
+  '8320':'Neuquén, Neuquén','8324':'Cutral-Có, Neuquén','8328':'Plaza Huincul, Neuquén',
+  '8340':'Zapala, Neuquén','8370':'San Martín de los Andes, Neuquén',
+  '8400':'San Carlos de Bariloche, Río Negro','8401':'San Carlos de Bariloche, Río Negro',
+  '8402':'San Carlos de Bariloche, Río Negro','8403':'San Carlos de Bariloche, Río Negro',
+  '8404':'San Carlos de Bariloche, Río Negro','8405':'San Carlos de Bariloche, Río Negro',
+  '8500':'Viedma, Río Negro','8520':'General Roca, Río Negro','8600':'Cipolletti, Río Negro',
+  '8700':'Trelew, Chubut','8800':'Comodoro Rivadavia, Chubut','8900':'Río Gallegos, Santa Cruz',
+  '9000':'Comodoro Rivadavia, Chubut','9100':'Esquel, Chubut',
+  '9200':'Esquel, Chubut','9300':'Santa Cruz, Santa Cruz',
+  '9400':'Río Gallegos, Santa Cruz','9405':'Río Gallegos, Santa Cruz',
+  '9420':'Punta Arenas, Santa Cruz','9410':'Río Turbio, Santa Cruz',
+  '9411':'El Calafate, Santa Cruz','9420':'Puerto Natales, Santa Cruz',
+  '9430':'Puerto Madryn, Chubut',
+  '9410':'Ushuaia, Tierra del Fuego','9411':'Ushuaia, Tierra del Fuego',
+  '9420':'Río Grande, Tierra del Fuego','9421':'Río Grande, Tierra del Fuego',
+};
+
+function lookupCP(){
+  const cp=(document.getElementById('f-cp')?.value||'').trim();
+  const info=document.getElementById('cp-info');
+  const status=document.getElementById('cp-status');
+  if(!cp||cp.length<4){if(info)info.textContent='';if(status)status.textContent='';return}
+  const result=CP_TABLE[cp];
+  if(result){
+    const[ciudad,provincia]=result.split(', ');
+    if(info)info.textContent='📍 '+result;
+    if(status)status.textContent='✅';
+    const ce=document.getElementById('f-city'),pe=document.getElementById('f-province');
+    if(ce&&!ce.value)ce.value=ciudad;
+    if(pe&&!pe.value)pe.value=provincia;
+  } else {
+    if(info)info.textContent='Código postal no encontrado en la tabla';
+    if(status)status.textContent='❓';
+  }
+}
+
+function clientFormFields(c){
+  c=c||{};
+  return `
+    <div class="form-group"><label>Nombre *</label><input id="f-name" placeholder="María" value="${c.name||''}" autocomplete="given-name"/></div>
+    <div class="form-group"><label>Apellido *</label><input id="f-last" placeholder="García" value="${c.last||''}" autocomplete="family-name"/></div>
+    <div class="form-group"><label>DNI</label><input id="f-dni" placeholder="12345678" type="tel" value="${c.dni||''}"/></div>
+    <div class="form-group"><label>Teléfono</label><input id="f-phone" placeholder="11 2345-6789" type="tel" value="${c.phone||''}" autocomplete="tel"/></div>
+    <div class="form-group full"><label>Mail</label><input id="f-email" placeholder="hola@mail.com" type="email" value="${c.email||''}" autocomplete="email"/></div>
+    <div class="form-group full"><label>Dirección</label><input id="f-address" placeholder="Av. Corrientes" value="${c.address||''}"/></div>
+    <div class="form-group"><label>Número</label><input id="f-addrnum" placeholder="1234" type="tel" value="${c.addrnum||''}"/></div>
+    <div class="form-group"><label>Depto / Piso</label><input id="f-depto" placeholder="3° B" value="${c.depto||''}"/></div>
+    <div class="form-group full">
+      <label>Código Postal</label>
+      <div style="position:relative">
+        <input id="f-cp" placeholder="1425" type="tel" value="${c.cp||''}" oninput="lookupCP()" style="padding-right:40px"/>
+        <span id="cp-status" class="cp-status"></span>
+      </div>
+      <div id="cp-info" class="cp-info">${c.cpInfo||''}</div>
+    </div>
+    <div class="form-group"><label>Ciudad</label><input id="f-city" placeholder="Buenos Aires" value="${c.city||''}"/></div>
+    <div class="form-group"><label>Provincia</label><input id="f-province" placeholder="CABA" value="${c.province||''}"/></div>
+    <div class="form-group full"><label>Notas</label><input id="f-notes" placeholder="Preferencias, cómo llegó..." value="${c.notes||''}"/></div>`;
+}
+function getClientFormData(){
+  return {
+    name:document.getElementById('f-name').value.trim(),
+    last:document.getElementById('f-last').value.trim(),
+    dni:document.getElementById('f-dni').value.trim(),
+    phone:document.getElementById('f-phone').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    address:document.getElementById('f-address').value.trim(),
+    addrnum:document.getElementById('f-addrnum').value.trim(),
+    depto:document.getElementById('f-depto').value.trim(),
+    cp:document.getElementById('f-cp').value.trim(),
+    cpInfo:document.getElementById('cp-info')?.textContent||'',
+    city:document.getElementById('f-city').value.trim(),
+    province:document.getElementById('f-province').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+  };
+}
+
+/* CLIENTS */
+function renderClients(){
+  const sv=document.getElementById('csearch')?document.getElementById('csearch').value.toLowerCase():'';
+  let f=db.clients.filter(c=>(c.name+' '+c.last).toLowerCase().includes(sv)||(c.phone||'').includes(sv));
+  let h=`<div class="backup-bar">
+    <span>💾 Copia de seguridad</span>
+    <button class="btn-sm" onclick="exportBackup()">Exportar</button>
+    <button class="btn-sm ghost" onclick="importBackup()">Importar</button>
+  </div>
+  <div class="search-wrap"><span class="search-icon">🔍</span><input id="csearch" placeholder="Buscar cliente..." value="${sv}" oninput="renderCS()" autocomplete="off"/></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span class="section-label">${f.length} cliente${f.length!==1?'s':''}</span>
+    <button class="btn-sm" onclick="goNC()">+ Nuevo</button>
+  </div>`;
+  if(!f.length) return h+`<div class="empty-state"><div class="empty-icon">🌿</div><p>No hay clientes.<br>¡Agregá el primero!</p></div>`;
+  f.sort((a,b)=>(a.name+a.last).localeCompare(b.name+b.last));
+  f.forEach(c=>{
+    const sc=csales(c.id);
+    h+=`<div class="client-item" onclick="openClient('${c.id}')">
+      <div class="client-avatar">${initials(c.name,c.last)}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name} ${c.last}</div>
+        <div class="client-meta">${c.phone||'Sin teléfono'}${c.city?' · '+c.city:''}</div>
+      </div>
+      <div class="client-badge ${!sc.length?'zero':''}">${sc.length} ${sc.length===1?'venta':'ventas'}</div>
+    </div>`;
+  });
+  return h;
+}
+function renderCS(){document.getElementById('content').innerHTML=renderClients()}
+
+function renderNewClientForm(){
+  return `<button class="back-btn" onclick="setTab('clients')">← Volver</button>
+  <div class="card"><div class="card-title">👤 Nuevo cliente</div>
+    <div class="form-grid">${clientFormFields()}</div>
+    <button class="btn-primary" onclick="saveNC()">Guardar cliente</button>
+  </div>`;
+}
+function renderEditClientForm(){
+  const c=db.clients.find(x=>x.id===selectedClient);if(!c)return'';
+  return `<button class="back-btn" onclick="openClient('${c.id}')">← Volver al cliente</button>
+  <div class="card"><div class="card-title">✏️ Editar cliente</div>
+    <div class="form-grid">${clientFormFields(c)}</div>
+    <button class="btn-primary" onclick="saveEC('${c.id}')">Guardar cambios</button>
+  </div>`;
+}
+
+/* CLIENT DETAIL */
+function renderClientDetail(){
+  const c=db.clients.find(x=>x.id===selectedClient);
+  if(!c){setTab('clients');return''}
+  const sales=csales(c.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const total=ctotal(c.id);
+  const fullAddr=[c.address,c.addrnum,c.depto].filter(Boolean).join(' ');
+  const loc=[c.city,c.province,c.cp].filter(Boolean).join(', ');
+  let h=`<button class="back-btn" onclick="setTab('clients')">← Todos los clientes</button>
+  <div class="card">
+    <div class="detail-header">
+      <div class="detail-avatar">${initials(c.name,c.last)}</div>
+      <div class="detail-info"><h2>${c.name} ${c.last}</h2><div class="detail-meta">Cliente desde ${formatDate(c.createdAt)}</div></div>
+    </div>
+    ${c.dni?`<div class="info-row"><span class="info-label">🪪 DNI</span><span class="info-val">${c.dni}</span></div>`:''}
+    ${c.phone?`<div class="info-row"><span class="info-label">📱 Teléfono</span><span class="info-val"><a href="tel:${c.phone}" style="color:var(--gold);text-decoration:none">${c.phone}</a></span></div>`:''}
+    ${c.email?`<div class="info-row"><span class="info-label">✉️ Mail</span><span class="info-val" style="font-size:13px">${c.email}</span></div>`:''}
+    ${fullAddr?`<div class="info-row"><span class="info-label">🏠 Dirección</span><span class="info-val">${fullAddr}</span></div>`:''}
+    ${loc?`<div class="info-row"><span class="info-label">📍 Ubicación</span><span class="info-val">${loc}</span></div>`:''}
+    ${c.notes?`<div class="info-row"><span class="info-label">📝 Nota</span><span class="info-val">${c.notes}</span></div>`:''}
+    <div class="divider"></div>
+    <div class="flex-row">
+      <button class="btn-sm" onclick="goEC('${c.id}')">✏️ Editar</button>
+      <button class="btn-sm" onclick="goNSC('${c.id}')">✨ Nueva venta</button>
+      <button class="btn-sm danger" onclick="delClient('${c.id}')">🗑️</button>
+    </div>
+  </div>
+  <div class="section-label">${sales.length} venta${sales.length!==1?'s':''}</div>`;
+  if(!sales.length){
+    h+=`<div class="empty-state" style="padding:28px"><div class="empty-icon">🛍️</div><p>Sin ventas todavía</p></div>`;
+  } else {
+    sales.forEach(s=>{ h+=saleCard(s,stotal(s),false) });
+    h+=`<div class="total-row"><span>Total gastado</span><span>${fmoney(total)}</span></div>`;
+  }
+  return h;
+}
+
+/* SALE CARD */
+function saleCard(s,st,showClient){
+  const c=db.clients.find(x=>x.id===s.clientId);
+  const dTag=s.delivery==='envio'
+    ?`<span class="delivery-tag envio">🚚 Envío</span>`
+    :`<span class="delivery-tag retiro">🏪 Retiro</span>`;
+  return `<div class="sale-item">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <div style="flex:1">
+        ${showClient&&c?`<div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:5px">${c.name} ${c.last}</div>`:''}
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px">${dTag}<span class="sale-date">📅 ${formatDate(s.date)}</span></div>
+        <div>${s.items.map(i=>`<span class="prod-tag">${i.qty>1?i.qty+'× ':''}${i.name} — ${fmoney(i.price)}</span>`).join('')}</div>
+        ${s.note?`<div style="font-size:12px;color:var(--text-dim);margin-top:5px">${s.note}</div>`:''}
+      </div>
+      <div class="sale-price">${fmoney(st)}</div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:10px;flex-wrap:wrap">
+      <button class="btn-sm" style="padding:6px 12px;font-size:12px" onclick="goEditSale('${s.id}')">✏️ Editar</button>
+      ${showClient&&c?`<button class="btn-sm ghost" style="padding:6px 12px;font-size:12px" onclick="openClient('${c.id}')">Ver cliente</button>`:''}
+      <button class="btn-sm danger" style="padding:6px 12px;font-size:12px" onclick="delSale('${s.id}')">Eliminar</button>
+    </div>
+  </div>`;
+}
+
+/* SALE FORM HELPERS */
+function productRowHTML(p,i){
+  return `<div class="product-row">
+    <div class="product-row-top">
+      <div class="form-group" style="margin:0"><label style="font-size:10px">Producto</label>
+        <input placeholder="Pulsera con dijes..." value="${p.name||''}" oninput="saleProducts[${i}].name=this.value"/>
+      </div>
+      <button class="remove-btn" onclick="removeP(${i})" ${saleProducts.length===1?'style="opacity:.3;pointer-events:none"':''}>×</button>
+    </div>
+    <div class="product-row-bottom">
+      <div class="form-group" style="margin:0"><label style="font-size:10px">Cantidad</label>
+        <input type="number" min="1" value="${p.qty||1}" oninput="saleProducts[${i}].qty=parseInt(this.value)||1;updTotal()"/>
+      </div>
+      <div class="form-group" style="margin:0"><label style="font-size:10px">Precio unitario</label>
+        <input type="number" min="0" placeholder="0" value="${p.price||''}" oninput="saleProducts[${i}].price=parseFloat(this.value)||0;updTotal()"/>
+      </div>
+    </div>
+  </div>`;
+}
+function deliveryToggleHTML(){
+  return `<div class="form-group full"><label>Tipo de entrega</label>
+    <div class="toggle-row">
+      <div class="toggle-opt ${saleDelivery==='retiro'?'active-retiro':''}" id="tog-retiro" onclick="setDelivery('retiro')">🏪 Retiro</div>
+      <div class="toggle-opt ${saleDelivery==='envio'?'active-envio':''}" id="tog-envio" onclick="setDelivery('envio')">🚚 Envío</div>
+    </div>
+  </div>`;
+}
+function saleFormBody(clientId,date,note){
+  const opts=db.clients.map(c=>`<option value="${c.id}" ${(clientId&&clientId===c.id)||(selectedClient===c.id&&!clientId)?'selected':''}>${c.name} ${c.last}</option>`).join('');
+  let h=`<div class="form-grid">
+    <div class="form-group full"><label>Cliente *</label>
+      <select id="s-client">${db.clients.length?'<option value="">Seleccioná un cliente...</option>'+opts:'<option value="">Primero creá un cliente</option>'}</select>
+    </div>
+    <div class="form-group"><label>Fecha *</label><input id="s-date" type="date" value="${date||new Date().toISOString().split('T')[0]}"/></div>
+    <div class="form-group"><label>Nota</label><input id="s-note" placeholder="Aclaraciones..." value="${note||''}"/></div>
+    ${deliveryToggleHTML()}
+  </div>
+  <div style="margin:14px 0 8px"><label>Productos *</label></div>
+  <div id="prods-list">`;
+  saleProducts.forEach((p,i)=>{h+=productRowHTML(p,i)});
+  h+=`</div><button class="add-product-btn" onclick="addP()">+ Agregar otro producto</button>
+  <div class="total-row"><span>Total</span><span id="stotal-disp">${fmoney(saleProducts.reduce((a,p)=>a+(p.price||0)*(p.qty||1),0))}</span></div>`;
+  return h;
+}
+
+function renderNewSaleForm(){
+  return `${selectedClient?`<button class="back-btn" onclick="openClient('${selectedClient}')">← Volver al cliente</button>`:''}
+  <div class="card"><div class="card-title">✨ Registrar venta</div>
+    ${saleFormBody(null,null,null)}
+    <button class="btn-primary" onclick="saveS()">Guardar venta</button>
+  </div>`;
+}
+function renderEditSaleForm(){
+  const s=db.sales.find(x=>x.id===editingSaleId);if(!s)return'';
+  saleProducts=[...s.items.map(i=>({name:i.name,qty:i.qty,price:i.price}))];
+  saleDelivery=s.delivery||'retiro';
+  return `<button class="back-btn" onclick="setTab('sales')">← Volver al historial</button>
+  <div class="card"><div class="card-title">✏️ Editar venta</div>
+    ${saleFormBody(s.clientId,s.date,s.note||'')}
+    <button class="btn-primary" onclick="saveEditSale('${s.id}')">Guardar cambios</button>
+  </div>`;
+}
+
+function setDelivery(type){
+  saleDelivery=type;
+  const r=document.getElementById('tog-retiro'),e=document.getElementById('tog-envio');
+  if(r)r.className='toggle-opt'+(type==='retiro'?' active-retiro':'');
+  if(e)e.className='toggle-opt'+(type==='envio'?' active-envio':'');
+}
+function updTotal(){
+  const t=saleProducts.reduce((a,p)=>a+(parseFloat(p.price)||0)*(parseInt(p.qty)||1),0);
+  const el=document.getElementById('stotal-disp');if(el)el.textContent=fmoney(t);
+}
+function addP(){
+  const cid=document.getElementById('s-client')?.value,date=document.getElementById('s-date')?.value,note=document.getElementById('s-note')?.value;
+  saleProducts.push({name:'',qty:1,price:''});render();
+  if(cid){const el=document.getElementById('s-client');if(el)el.value=cid}
+  if(date){const el=document.getElementById('s-date');if(el)el.value=date}
+  if(note){const el=document.getElementById('s-note');if(el)el.value=note}
+}
+function removeP(i){
+  if(saleProducts.length===1)return;
+  const cid=document.getElementById('s-client')?.value,date=document.getElementById('s-date')?.value,note=document.getElementById('s-note')?.value;
+  saleProducts.splice(i,1);render();
+  if(cid){const el=document.getElementById('s-client');if(el)el.value=cid}
+  if(date){const el=document.getElementById('s-date');if(el)el.value=date}
+  if(note){const el=document.getElementById('s-note');if(el)el.value=note}
+}
+function getItemsFromDOM(){
+  const rows=document.querySelectorAll('.product-row');
+  const items=[];
+  rows.forEach(row=>{
+    const inputs=row.querySelectorAll('input');
+    const name=(inputs[0]?.value||'').trim(),qty=parseInt(inputs[1]?.value)||1,price=parseFloat(inputs[2]?.value)||0;
+    if(name)items.push({name,qty,price});
+  });
+  return items;
+}
+
+/* SALES HISTORY */
+function renderSales(){
+  const sales=[...db.sales].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  let h=`<div class="section-label">${sales.length} venta${sales.length!==1?'s':''} en total</div>`;
+  if(!sales.length) return h+`<div class="empty-state"><div class="empty-icon">🧾</div><p>No hay ventas registradas.</p></div>`;
+  sales.forEach(s=>{h+=saleCard(s,stotal(s),true)});
+  const gt=db.sales.reduce((a,s)=>a+stotal(s),0);
+  h+=`<div class="total-row" style="margin-top:14px"><span>Total general</span><span>${fmoney(gt)}</span></div>`;
+  return h;
+}
+
+/* STATS */
+function renderStats(){
+  const total=db.sales.reduce((a,s)=>a+stotal(s),0);
+  const avg=db.sales.length?total/db.sales.length:0;
+  const topC=db.clients.map(c=>({c,total:ctotal(c.id),count:csales(c.id).length})).filter(x=>x.count>0).sort((a,b)=>b.total-a.total).slice(0,5);
+  const envios=db.sales.filter(s=>s.delivery==='envio').length;
+  const retiros=db.sales.length-envios;
+  let h=`<div class="stats-grid">
+    <div class="stat-card"><span class="stat-num">${db.clients.length}</span><div class="stat-label">Clientes</div></div>
+    <div class="stat-card"><span class="stat-num">${db.sales.length}</span><div class="stat-label">Ventas</div></div>
+    <div class="stat-card"><span class="stat-num">${fmoney(total)}</span><div class="stat-label">Total</div></div>
+    <div class="stat-card"><span class="stat-num">${fmoney(Math.round(avg))}</span><div class="stat-label">Promedio</div></div>
+  </div>
+  <div class="stats-grid" style="margin-bottom:12px">
+    <div class="stat-card"><span class="stat-num" style="color:#7EC8FF">${envios}</span><div class="stat-label">🚚 Envíos</div></div>
+    <div class="stat-card"><span class="stat-num" style="color:#7DC97D">${retiros}</span><div class="stat-label">🏪 Retiros</div></div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title">📈 Ventas por mes</div>
+    ${db.sales.length?'<canvas id="lineChart"></canvas>':'<div style="color:var(--text-dim);font-size:13px;text-align:center;padding:24px 0">Sin datos todavía</div>'}
+  </div>`;
+  if(topC.length>=2){
+    h+=`<div class="card" style="margin-bottom:12px">
+      <div class="card-title">🥇 Mejores clientes</div>
+      <canvas id="pieChart"></canvas>
+      <div id="pie-legend" style="margin-top:14px"></div>
+    </div>`;
+  }
+  if(topC.length){
+    h+=`<div class="card"><div class="card-title">🌟 Ranking</div>`;
+    topC.forEach((item,i)=>{
+      h+=`<div class="info-row" onclick="openClient('${item.c.id}')" style="cursor:pointer">
+        <span class="info-label">${['🥇','🥈','🥉','4.','5.'][i]} ${item.c.name} ${item.c.last}</span>
+        <span class="info-val">${fmoney(item.total)} <span style="font-size:12px;color:var(--text-dim)">(${item.count})</span></span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  return h;
+}
+
+function drawCharts(){
+  const W=document.getElementById('content')?.offsetWidth-28||320;
+  drawLine(W);drawPie(W);
+}
+
+function drawLine(W){
+  const canvas=document.getElementById('lineChart');if(!canvas)return;
+  const byM={};
+  db.sales.forEach(s=>{const m=s.date.slice(0,7);byM[m]=(byM[m]||0)+stotal(s)});
+  const months=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0])).slice(-8);
+  if(!months.length)return;
+  const H=230;canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  const pad={top:32,bottom:48,left:14,right:14};
+  const cW=W-pad.left-pad.right,cH=H-pad.top-pad.bottom;
+  const vals=months.map(m=>m[1]);
+  const maxV=Math.max(...vals)||1;
+  const xs=months.map((_,i)=>pad.left+(months.length===1?cW/2:(i/(months.length-1))*cW));
+  const ys=vals.map(v=>pad.top+cH-((v/maxV)*cH));
+
+  // grid
+  [0.25,0.5,0.75,1].forEach(f=>{
+    ctx.strokeStyle='rgba(201,168,76,0.07)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(pad.left,pad.top+cH-f*cH);ctx.lineTo(W-pad.right,pad.top+cH-f*cH);ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  if(months.length>1){
+    // area
+    ctx.beginPath();ctx.moveTo(xs[0],ys[0]);
+    for(let i=1;i<xs.length;i++){const mx=(xs[i-1]+xs[i])/2;ctx.bezierCurveTo(mx,ys[i-1],mx,ys[i],xs[i],ys[i])}
+    ctx.lineTo(xs[xs.length-1],pad.top+cH);ctx.lineTo(xs[0],pad.top+cH);ctx.closePath();
+    const g=ctx.createLinearGradient(0,pad.top,0,pad.top+cH);
+    g.addColorStop(0,'rgba(201,168,76,0.28)');g.addColorStop(1,'rgba(201,168,76,0.02)');
+    ctx.fillStyle=g;ctx.fill();
+    // line
+    ctx.beginPath();ctx.moveTo(xs[0],ys[0]);
+    for(let i=1;i<xs.length;i++){const mx=(xs[i-1]+xs[i])/2;ctx.bezierCurveTo(mx,ys[i-1],mx,ys[i],xs[i],ys[i])}
+    ctx.strokeStyle='#C9A84C';ctx.lineWidth=2.5;ctx.stroke();
+  }
+
+  // dots + labels
+  xs.forEach((x,i)=>{
+    ctx.beginPath();ctx.arc(x,ys[i],5,0,Math.PI*2);
+    ctx.fillStyle='#E8C97A';ctx.fill();ctx.strokeStyle='#0D0D0D';ctx.lineWidth=2;ctx.stroke();
+    const v=vals[i],label=v>=1000?'$'+Math.round(v/1000)+'k':fmoney(v);
+    ctx.fillStyle='#C9A84C';ctx.font='bold 10px DM Sans';ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.fillText(label,x,ys[i]-12);
+    const[yr,mo]=months[i][0].split('-');
+    const mN=new Date(yr,mo-1).toLocaleString('es-AR',{month:'short'});
+    ctx.fillStyle='#6B6050';ctx.font='10px DM Sans';ctx.textAlign='center';
+    ctx.fillText(mN+" '"+yr.slice(2),x,H-8);
+  });
+
+  ctx.strokeStyle='rgba(201,168,76,0.15)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad.left,pad.top+cH);ctx.lineTo(W-pad.right,pad.top+cH);ctx.stroke();
+}
+
+function drawPie(W){
+  const canvas=document.getElementById('pieChart');if(!canvas)return;
+  const topC=db.clients.map(c=>({c,total:ctotal(c.id)})).filter(x=>x.total>0).sort((a,b)=>b.total-a.total).slice(0,5);
+  if(topC.length<2)return;
+  const H=200;canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  const colors=['#C9A84C','#E8C97A','#8A6E2F','#6B5A35','#4A3E25'];
+  const total=topC.reduce((a,x)=>a+x.total,0);
+  const cx=W/2,cy=H/2,r=Math.min(W,H)/2-16;
+  let angle=-Math.PI/2;
+  topC.forEach((item,i)=>{
+    const slice=(item.total/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,angle,angle+slice);ctx.closePath();
+    ctx.fillStyle=colors[i];ctx.fill();ctx.strokeStyle='#0D0D0D';ctx.lineWidth=2.5;ctx.stroke();
+    const mid=angle+slice/2,px=cx+Math.cos(mid)*r*.65,py=cy+Math.sin(mid)*r*.65;
+    const pct=Math.round(item.total/total*100);
+    ctx.fillStyle=i<2?'#0D0D0D':'#F0EAD6';ctx.font='500 11px DM Sans';ctx.textAlign='center';ctx.textBaseline='middle';
+    if(pct>=8)ctx.fillText(pct+'%',px,py);
+    angle+=slice;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,r*.38,0,Math.PI*2);ctx.fillStyle='#0D0D0D';ctx.fill();
+  const lg=document.getElementById('pie-legend');
+  if(lg)lg.innerHTML=topC.map((item,i)=>`<div class="legend-item">
+    <div class="legend-dot" style="background:${colors[i]}"></div>
+    <span style="color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.c.name} ${item.c.last}</span>
+    <span style="color:var(--gold);font-weight:500;margin-left:8px">${fmoney(item.total)}</span>
+  </div>`).join('');
+}
+
+/* ACTIONS */
+function goNC(){currentTab='new-client';render();scrollTop()}
+function goEC(id){selectedClient=id;currentTab='edit-client';render();scrollTop()}
+function openClient(id){selectedClient=id;currentTab='client-detail';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));render();scrollTop()}
+function goNSC(cid){selectedClient=cid;saleProducts=[{name:'',qty:1,price:''}];saleDelivery='retiro';currentTab='new-sale';document.getElementById('tab-new-sale').classList.add('active');render();scrollTop()}
+function goEditSale(id){editingSaleId=id;currentTab='edit-sale';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-sales').classList.add('active');render();scrollTop()}
+
+function saveNC(){
+  const d=getClientFormData();
+  if(!d.name||!d.last){toast('⚠️ Completá nombre y apellido');return}
+  db.clients.push({id:'c_'+Date.now(),...d,createdAt:new Date().toISOString()});
+  save();toast('✅ Cliente guardado');setTab('clients');
+}
+function saveEC(id){
+  const d=getClientFormData();
+  if(!d.name||!d.last){toast('⚠️ Completá nombre y apellido');return}
+  Object.assign(db.clients.find(x=>x.id===id),d);
+  save();toast('✅ Cliente actualizado');openClient(id);
+}
+function saveS(){
+  const cid=document.getElementById('s-client').value,date=document.getElementById('s-date').value;
+  if(!cid){toast('⚠️ Seleccioná un cliente');return}
+  if(!date){toast('⚠️ Ingresá la fecha');return}
+  const items=getItemsFromDOM();
+  if(!items.length){toast('⚠️ Agregá al menos un producto');return}
+  const note=document.getElementById('s-note').value.trim();
+  db.sales.push({id:'s_'+Date.now(),clientId:cid,items,date,note,delivery:saleDelivery,createdAt:new Date().toISOString()});
+  saleProducts=[{name:'',qty:1,price:''}];saleDelivery='retiro';
+  save();toast('✅ Venta guardada');
+  const prev=selectedClient;selectedClient=null;
+  if(prev)openClient(cid);else setTab('sales');
+}
+function saveEditSale(id){
+  const cid=document.getElementById('s-client').value,date=document.getElementById('s-date').value;
+  if(!cid){toast('⚠️ Seleccioná un cliente');return}
+  if(!date){toast('⚠️ Ingresá la fecha');return}
+  const items=getItemsFromDOM();
+  if(!items.length){toast('⚠️ Agregá al menos un producto');return}
+  const note=document.getElementById('s-note').value.trim();
+  Object.assign(db.sales.find(x=>x.id===id),{clientId:cid,items,date,note,delivery:saleDelivery});
+  saleProducts=[{name:'',qty:1,price:''}];saleDelivery='retiro';editingSaleId=null;
+  save();toast('✅ Venta actualizada');setTab('sales');
+}
+function delClient(id){
+  if(!confirm('¿Eliminar este cliente y todas sus ventas?'))return;
+  db.clients=db.clients.filter(c=>c.id!==id);
+  db.sales=db.sales.filter(s=>s.clientId!==id);
+  save();toast('🗑️ Cliente eliminado');setTab('clients');
+}
+function delSale(id){
+  if(!confirm('¿Eliminar esta venta?'))return;
+  db.sales=db.sales.filter(s=>s.id!==id);
+  save();render();toast('🗑️ Venta eliminada');
+}
+
+render();
+</script>
+</body>
+</html>
